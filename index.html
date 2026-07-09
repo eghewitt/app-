@@ -80,9 +80,9 @@
             display: block;
         }
 
-        /* Home Page Dashboard styling */
+        /* Home Page Landing / Starting Dashboard Styling */
         .welcome-hero {
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             background: var(--card-bg);
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -91,8 +91,9 @@
         }
 
         .welcome-hero h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 1rem;
+            letter-spacing: -0.03em;
         }
 
         .dashboard-grid {
@@ -108,7 +109,7 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Questionnaire Steps */
+        /* Questionnaire Multi-Screen Steps */
         .step-group {
             display: none;
         }
@@ -120,3 +121,447 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        select, input {
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        /* Call To Action Buttons */
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover { opacity: 0.9; }
+
+        .btn-large {
+            font-size: 1.3rem;
+            padding: 1.2rem 3.5rem;
+            border-radius: 50px;
+            margin-top: 1.5rem;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-nav-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        /* Pricing Page Cards */
+        .pricing-tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Structured Recommendation Deck Container */
+        .recs-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .rec-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .rating-badge {
+            background: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-maps {
+            background: var(--success);
+            text-decoration: none;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .btn-maps:hover {
+            background-color: #16a34a;
+        }
+
+        .btn-sec {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        @media(max-width: 768px) {
+            .form-grid, .dashboard-grid { grid-template-columns: 1fr; }
+            .rec-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .card-actions { width: 100%; justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="showView('homeView')">UpNext</div>
+        <div class="search-container">
+            <input type="text" id="globalSearch" placeholder="Quick Search (e.g., Coffee, Bowling, Pizza)..." onkeypress="handleQuickSearch(event)">
+        </div>
+    </header>
+
+    <div class="container">
+
+        <section id="homeView" class="view-section active-view">
+            <div class="welcome-hero">
+                <h1>Stop Scrolling. Start Exploring.</h1>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.5;">
+                    UpNext eliminates endless decision paralysis. Get exactly 10 verified, immediate, and completely customized local choices configured to match your exact vibe parameters.
+                </p>
+                <button class="btn btn-large" onclick="showView('questionnaireView')">Start Questionnaire</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="panel-box">
+                    <h3>Saved & Scheduled Plans</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;" id="calendarStatus">No upcoming bookings. Generate choices and schedule plans to populate your agenda.</p>
+                    <div id="calendarList" style="margin-top: 1rem;"></div>
+                </div>
+                <div class="panel-box">
+                    <h3>Favorites Hub ❤️</h3>
+                    <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+                        <li>No bookmarks saved into your favorite locker yet.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="questionnaireView" class="view-section">
+            <div class="panel-box">
+                <h2>Activity Diagnostics Intake</h2>
+                
+                <div id="qStep1" class="step-group active-step">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 1 of 4: Vibe Alignment</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Desired Mood Focus</label>
+                            <select id="inputMood">
+                                <option value="Adventure">Adventure 🌄</option>
+                                <option value="Relaxing">Relaxing 🌊</option>
+                                <option value="Creative">Creative 🎨</option>
+                                <option value="Social" selected>Social 🎉</option>
+                                <option value="Nature">Nature 🌿</option>
+                                <option value="Romantic">Romantic ❤️</option>
+                                <option value="Productive">Productive 💼</option>
+                                <option value="Nightlife">Nightlife 🌙</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Current Energy State</label>
+                            <select id="inputEnergy">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Very High" selected>Very High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><div></div><button class="btn" onclick="goToStep(2)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep2" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 2 of 4: Structural Scale</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Headcount / Group Size</label>
+                            <input type="number" id="inputGroupSize" value="10" min="1">
+                        </div>
+                        <div class="form-item">
+                            <label>Who Are You With?</label>
+                            <select id="inputWith">
+                                <option value="Solo">Solo (Self-Discovery)</option>
+                                <option value="Partner">Date / Romantic Partner</option>
+                                <option value="Friends" selected>Friends Network</option>
+                                <option value="Family">Family Circle</option>
+                                <option value="Co-workers">Co-workers / Associates</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(1)">Back</button><button class="btn" onclick="goToStep(3)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep3" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 3 of 4: Logistics Filters</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Available Time Allotment (Minutes)</label>
+                            <input type="number" id="inputTime" value="120" step="30">
+                        </div>
+                        <div class="form-item">
+                            <label>Maximum Budget Cap ($)</label>
+                            <input type="number" id="inputBudget" value="60" step="10">
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(2)">Back</button><button class="btn" onclick="goToStep(4)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep4" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 4 of 4: Spatial Boundaries</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Environment Setting Preference</label>
+                            <select id="inputSetting">
+                                <option value="Indoor">Indoor Setting</option>
+                                <option value="Outdoor" selected>Outdoor Setting</option>
+                                <option value="Any">Any / Dual Setting</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Maximum Displacement Radius (Miles)</label>
+                            <input type="number" id="inputRadius" value="15">
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Generate Recommendations</button></div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="paywallView" class="view-section">
+            <div class="panel-box" style="text-align: center;">
+                <h2>Engine Allocation Threshold Reached</h2>
+                <p style="color: var(--text-muted)">Please update your active subscription status to enable continuous matching cycles.</p>
+                <div class="pricing-tier-grid">
+                    <div class="panel-box" style="background: rgba(0,0,0,0.2)">
+                        <h3>Free Profile Evaluation</h3>
+                        <p id="trialTokenStatus" style="font-weight: bold; margin: 1rem 0; color: #facc15;">3 of 3 sessions remaining</p>
+                        <button class="btn" style="width: 100%" onclick="bypassPaywall()">Continue Trial Path</button>
+                    </div>
+                    <div class="panel-box" style="border: 2px solid var(--accent)">
+                        <h3>UpNext Pro</h3>
+                        <p style="font-weight: bold; margin: 1rem 0; font-size: 1.5rem;">$4.99 / mo</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Infinite generation processes, zero query ceilings, live sync routing elements.</p>
+                        <button class="btn" style="width: 100%" onclick="purchaseTier('Pro')">Subscribe Natively</button>
+                    </div>
+                    <div class="panel-box" style="background: rgba(0,0,0,0.2)">
+                        <h3>Pay As You Go</h3>
+                        <p style="font-weight: bold; margin: 1rem 0; font-size: 1.5rem;">$0.99 / session</p>
+                        <button class="btn" style="width: 100%" onclick="purchaseTier('PayAsYouGo')">Pay & Execute</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="resultsView" class="view-section">
+            <h2 id="resultsHeader">Tailored Recommendations Matrix</h2>
+            <div id="outputDeck" class="recs-deck"></div>
+        </section>
+
+    </div>
+
+    <script>
+        // Static Core Mock Dataset simulating structural live responses from Google Places API
+        const mockDatabase = [
+            { name: "Enigma Breakout Spaces", cat: "Escape Room", mood: "Adventure", energy: "Very High", out: false, budget: 30, rating: 4.9, revs: 142, address: "712 Cascade Ave" },
+            { name: "Strike Alley Express", cat: "Bowling Alley", mood: "Social", energy: "Very High", out: false, budget: 15, rating: 4.4, revs: 310, address: "901 Linear St" },
+            { name: "Apex Kinetic Circuits", cat: "Go-Karting", mood: "Adventure", energy: "Very High", out: true, budget: 45, rating: 4.7, revs: 89, address: "12 Motorway Hub" },
+            { name: "Overlook Summit Path", cat: "Hiking Trail", mood: "Nature", energy: "Very High", out: true, budget: 0, rating: 4.8, revs: 1205, address: "Ridge Boundary Line" },
+            { name: "The Daily Roast Co.", cat: "Coffee Shop", mood: "Relaxing", energy: "Low", out: false, budget: 7, rating: 4.5, revs: 210, address: "404 Extraction Way" },
+            { name: "Cloud Nine Parks", cat: "Trampoline Park", mood: "Social", energy: "Very High", out: false, budget: 22, rating: 4.5, revs: 175, address: "88 Bounce Blvd" },
+            { name: "Metropolitan Curations", cat: "Museum", mood: "Creative", energy: "Medium", out: false, budget: 15, rating: 4.8, revs: 2300, address: "500 Gallery Mall" },
+            { name: "Velvet Lounge & Lanes", cat: "Bowling Alley", mood: "Nightlife", energy: "High", out: false, budget: 25, rating: 4.6, revs: 198, address: "220 Neon Blvd" },
+            { name: "Whispering Pines Creek", cat: "Hiking Trail", mood: "Nature", energy: "Medium", out: true, budget: 0, rating: 4.7, revs: 412, address: "State Reserve Entrance" },
+            { name: "The Retro Cabinet", cat: "Arcade", mood: "Social", energy: "Very High", out: false, budget: 12, rating: 4.6, revs: 512, address: "11 Joystick Alley" }
+        ];
+
+        let freeSessions = 3;
+        let profileTier = "Free";
+        let savedFavorites = [];
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+        }
+
+        function goToStep(stepNum) {
+            document.querySelectorAll('.step-group').forEach(s => s.classList.remove('active-step'));
+            document.getElementById(`qStep${stepNum}`).classList.add('active-step');
+        }
+
+        function purchaseTier(tier) {
+            profileTier = tier;
+            alert(`Profile transaction success! Status level: ${tier}`);
+            showView('questionnaireView');
+        }
+
+        function bypassPaywall() {
+            if(freeSessions <= 0) {
+                alert("Evaluation limits expired. Choose an option to keep testing.");
+                return;
+            }
+            showView('questionnaireView');
+        }
+
+        // Adaptive Color Theme Engine Architecture
+        function mutateThemeWorkspace(mood) {
+            const palettes = {
+                "Adventure": "linear-gradient(135deg, #0f172a 0%, #7c2d12 100%)",
+                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
+                "Creative": "linear-gradient(135deg, #0f172a 0%, #581c87 100%)",
+                "Social": "linear-gradient(135deg, #0f172a 0%, #713f12 100%)",
+                "Nature": "linear-gradient(135deg, #0f172a 0%, #064e3b 100%)",
+                "Romantic": "linear-gradient(135deg, #0f172a 0%, #831843 100%)",
+                "Productive": "linear-gradient(135deg, #0f172a 0%, #115e59 100%)",
+                "Nightlife": "linear-gradient(135deg, #0f172a 0%, #311042 100%)"
+            };
+            document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)";
+        }
+
+        function processEngineRun() {
+            if (profileTier === "Free") {
+                if (freeSessions <= 0) {
+                    showView('paywallView');
+                    return;
+                }
+                freeSessions--;
+                document.getElementById('trialTokenStatus').innerText = `${freeSessions} of 3 free sessions remaining`;
+            }
+
+            const targetMood = document.getElementById('inputMood').value;
+            mutateThemeWorkspace(targetMood);
+
+            // Match values directly based on the user questionnaire selection matrix
+            let matches = mockDatabase.filter(item => item.mood === targetMood);
+            
+            // Deduplication buffer algorithm guaranteeing a clean block of exactly 10 non-repeating recommendations
+            if (matches.length < 10) {
+                const supplementary = mockDatabase.filter(item => item.mood !== targetMood);
+                matches = [...matches, ...supplementary].slice(0, 10);
+            }
+
+            document.getElementById('resultsHeader').innerText = `10 Tailored Suggestions (${targetMood} Vibe Grid)`;
+            renderDeckCollection(matches);
+            showView('resultsView');
+        }
+
+        function handleQuickSearch(e) {
+            if (e.key === 'Enter') {
+                const query = document.getElementById('globalSearch').value.toLowerCase();
+                const matchedResults = mockDatabase.filter(item => 
+                    item.name.toLowerCase().includes(query) || 
+                    item.cat.toLowerCase().includes(query)
+                );
+                document.getElementById('resultsHeader').innerText = `Quick Search Pipeline Results: "${query}"`;
+                renderDeckCollection(matchedResults);
+                showView('resultsView');
+            }
+        }
+
+        function renderDeckCollection(list) {
+            const container = document.getElementById('outputDeck');
+            container.innerHTML = "";
+
+            list.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = "rec-card";
+                
+                // Native URL string encoding to safely inject address terms directly into live Google Maps queries
+                const mapQuery = encodeURIComponent(`${item.name} ${item.address}`);
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <span class="rating-badge">★ ${item.rating}</span>
+                            <span style="font-size:0.8rem; color:var(--text-muted)">(${item.revs} reviews)</span>
+                        </div>
+                        <h3 style="margin: 0.3rem 0">${item.name}</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted)">${item.address} • Est. Budget: $${item.budget} • Verified Open</p>
+                        <p style="font-size:0.85rem; color:var(--accent); margin-top:0.25rem;">Matches chosen preferences with an optimized user score profile.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
+                        <button class="btn-sec" onclick="bookItem('${item.name}')">📅 Schedule</button>
+                        <a href="${mapsUrl}" target="_blank" class="btn-maps">Get Me There</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addFav(name) {
+            if(!savedFavorites.includes(name)) {
+                savedFavorites.push(name);
+                const list = document.getElementById('favoritesList');
+                if(savedFavorites.length === 1) list.innerHTML = "";
+                const li = document.createElement('li');
+                li.style.marginTop = "0.4rem";
+                li.innerText = `⭐ ${name}`;
+                list.appendChild(li);
+                alert(`${name} added to favorites.`);
+            }
+        }
+
+        function bookItem(name) {
+            const list = document.getElementById('calendarList');
+            document.getElementById('calendarStatus').style.display = 'none';
+            const item = document.createElement('div');
+            item.style = "background:rgba(0,0,0,0.2); padding:0.6rem; margin-bottom:0.5rem; border-radius:6px; font-size:0.9rem; border-left:3px solid var(--success);";
+            item.innerText = `📅 Planned: ${name} (Scheduled for immediate action)`;
+            list.appendChild(item);
+            alert(`Activity locked! ${name} is recorded to your dashboard schedule tracker.`);
+        }
+    </script>
+</body>
+</html>
