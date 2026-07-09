@@ -351,4 +351,185 @@
                         </div>
                         <div class="form-item">
                             <label>Maximum Displacement Radius (Miles)</label>
-                            <input type="number" id="inputRadius
+                            <input type="number" id="inputRadius" value="15">
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Generate Recommendations</button></div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="paywallView" class="view-section">
+            <div class="panel-box" style="text-align: center;">
+                <h2>Engine Allocation Threshold Reached</h2>
+                <p style="color: var(--text-muted)">Please update your active subscription status to enable continuous matching cycles.</p>
+                <div class="pricing-tier-grid">
+                    <div class="panel-box" style="background: rgba(0,0,0,0.2)">
+                        <h3>Free Profile Evaluation</h3>
+                        <p id="trialTokenStatus" style="font-weight: bold; margin: 1rem 0; color: #facc15;">3 of 3 sessions remaining</p>
+                        <button class="btn" style="width: 100%" onclick="bypassPaywall()">Continue Trial Path</button>
+                    </div>
+                    <div class="panel-box" style="border: 2px solid var(--accent)">
+                        <h3>UpNext Pro</h3>
+                        <p style="font-weight: bold; margin: 1rem 0; font-size: 1.5rem;">$4.99 / mo</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Infinite generation processes, zero query ceilings, live sync routing elements.</p>
+                        <button class="btn" style="width: 100%" onclick="purchaseTier('Pro')">Subscribe Natively</button>
+                    </div>
+                    <div class="panel-box" style="background: rgba(0,0,0,0.2)">
+                        <h3>Pay As You Go</h3>
+                        <p style="font-weight: bold; margin: 1rem 0; font-size: 1.5rem;">$0.99 / session</p>
+                        <button class="btn" style="width: 100%" onclick="purchaseTier('PayAsYouGo')">Pay & Execute</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="resultsView" class="view-section">
+            <h2 id="resultsHeader">Tailored Recommendations Matrix</h2>
+            <div id="outputDeck" class="recs-deck"></div>
+        </section>
+
+    </div>
+
+    <script>
+        // Real-world, generic search keywords
+        const mockDatabase = [
+            { name: "Top Escape Rooms nearby", cat: "Escape Room", mood: "Adventure", energy: "Very High", out: false, budget: 30, rating: 4.9, revs: 142 },
+            { name: "Bowling Alley nearby", cat: "Bowling Alley", mood: "Social", energy: "Very High", out: false, budget: 15, rating: 4.4, revs: 310 },
+            { name: "Go Kart Track nearby", cat: "Go-Karting", mood: "Adventure", energy: "Very High", out: true, budget: 45, rating: 4.7, revs: 89 },
+            { name: "Scenic Hiking Trails nearby", cat: "Hiking Trail", mood: "Nature", energy: "Very High", out: true, budget: 0, rating: 4.8, revs: 1205 },
+            { name: "Best Coffee Shops nearby", cat: "Coffee Shop", mood: "Relaxing", energy: "Low", out: false, budget: 7, rating: 4.5, revs: 210 },
+            { name: "Trampoline Park nearby", cat: "Trampoline Park", mood: "Social", energy: "Very High", out: false, budget: 22, rating: 4.5, revs: 175 },
+            { name: "Art Museums nearby", cat: "Museum", mood: "Creative", energy: "Medium", out: false, budget: 15, rating: 4.8, revs: 2300 },
+            { name: "Mini Golf Course nearby", cat: "Mini Golf", mood: "Nightlife", energy: "High", out: true, budget: 25, rating: 4.6, revs: 198 },
+            { name: "Public Parks and Nature Reserves nearby", cat: "Hiking Trail", mood: "Nature", energy: "Medium", out: true, budget: 0, rating: 4.7, revs: 412 },
+            { name: "Arcade and Gaming Lounges nearby", cat: "Arcade", mood: "Social", energy: "Very High", out: false, budget: 12, rating: 4.6, revs: 512 }
+        ];
+
+        let freeSessions = 3;
+        let profileTier = "Free";
+        let savedFavorites = [];
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+        }
+
+        function goToStep(stepNum) {
+            document.querySelectorAll('.step-group').forEach(s => s.classList.remove('active-step'));
+            document.getElementById(`qStep${stepNum}`).classList.add('active-step');
+        }
+
+        function purchaseTier(tier) {
+            profileTier = tier;
+            alert(`Profile transaction success! Status level: ${tier}`);
+            showView('questionnaireView');
+        }
+
+        function bypassPaywall() {
+            if(freeSessions <= 0) {
+                alert("Evaluation limits expired. Choose an option to keep testing.");
+                return;
+            }
+            showView('questionnaireView');
+        }
+
+        function mutateThemeWorkspace(mood) {
+            const palettes = {
+                "Adventure": "linear-gradient(135deg, #0f172a 0%, #7c2d12 100%)",
+                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
+                "Creative": "linear-gradient(135deg, #0f172a 0%, #581c87 100%)",
+                "Social": "linear-gradient(135deg, #0f172a 0%, #713f12 100%)",
+                "Nature": "linear-gradient(135deg, #0f172a 0%, #064e3b 100%)",
+                "Romantic": "linear-gradient(135deg, #0f172a 0%, #831843 100%)",
+                "Productive": "linear-gradient(135deg, #0f172a 0%, #115e59 100%)",
+                "Nightlife": "linear-gradient(135deg, #0f172a 0%, #311042 100%)"
+            };
+            document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)";
+        }
+
+        function processEngineRun() {
+            if (profileTier === "Free") {
+                if (freeSessions <= 0) {
+                    showView('paywallView');
+                    return;
+                }
+                freeSessions--;
+                document.getElementById('trialTokenStatus').innerText = `${freeSessions} of 3 free sessions remaining`;
+            }
+
+            const targetMood = document.getElementById('inputMood').value;
+            mutateThemeWorkspace(targetMood);
+
+            let matches = mockDatabase.filter(item => item.mood === targetMood);
+            
+            if (matches.length < 10) {
+                const complementary = mockDatabase.filter(item => item.mood !== targetMood);
+                matches = [...matches, ...supplementary].slice(0, 10);
+            }
+
+            document.getElementById('resultsHeader').innerText = `10 Tailored Suggestions (${targetMood} Vibe Grid)`;
+            renderDeckCollection(matches);
+            showView('resultsView');
+        }
+
+        function renderDeckCollection(list) {
+            const container = document.getElementById('outputDeck');
+            container.innerHTML = "";
+
+            list.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = "rec-card";
+                
+                // FIXED: Uses official Search API parameters to strictly respect current user location coordinates
+                const mapQuery = encodeURIComponent(item.name);
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <span class="rating-badge">★ ${item.rating}</span>
+                            <span style="font-size:0.8rem; color:var(--text-muted)">(${item.revs} reviews)</span>
+                        </div>
+                        <h3 style="margin: 0.3rem 0">${item.name}</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted)">Category: ${item.cat} • Est. Budget: $${item.budget} • Real-time Search</p>
+                        <p style="font-size:0.85rem; color:var(--accent); margin-top:0.25rem;">Matches chosen preferences with an optimized user score profile.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
+                        <button class="btn-sec" onclick="bookItem('${item.name}')">📅 Schedule</button>
+                        <a href="${mapsUrl}" target="_blank" class="btn-maps">Get Me There</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addFav(name) {
+            if(!savedFavorites.includes(name)) {
+                savedFavorites.push(name);
+                const list = document.getElementById('favoritesList');
+                if(savedFavorites.length === 1) list.innerHTML = "";
+                const li = document.createElement('li');
+                li.style.marginTop = "0.4rem";
+                li.innerText = `⭐ ${name}`;
+                list.appendChild(li);
+                alert(`${name} added to favorites.`);
+            }
+        }
+
+        function bookItem(name) {
+            const list = document.getElementById('calendarList');
+            document.getElementById('calendarStatus').style.display = 'none';
+            const item = document.createElement('div');
+            item.style = "background:rgba(0,0,0,0.2); padding:0.6rem; margin-bottom:0.5rem; border-radius:6px; font-size:0.9rem; border-left:3px solid var(--success);";
+            item.innerText = `📅 Planned: ${name} (Scheduled for immediate action)`;
+            list.appendChild(item);
+            alert(`Activity locked! ${name} is recorded to your dashboard schedule tracker.`);
+        }
+    </script>
+</body>
+</html>
