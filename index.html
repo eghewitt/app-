@@ -6,12 +6,12 @@
     <title>UpNext — Your Personal Activity Assistant</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --accent: #3b82f6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --success: #22c55e;
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --accent: #2563eb;
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+            --success: #16a34a;
         }
 
         * {
@@ -25,36 +25,38 @@
             background: var(--bg-gradient);
             color: var(--text-main);
             min-height: 100vh;
-            transition: background 0.8s ease;
+            transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-x: hidden;
+            font-size: 1.2rem; /* Scaled up default typography base */
         }
 
         header {
-            padding: 1.25rem 2rem;
+            padding: 1.75rem 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 2.2rem;
+            font-weight: 900;
             cursor: pointer;
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            background: linear-gradient(to right, #3b82f6, #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 1600px; /* Widened from 1100px to fill the page layout natively */
+            width: 95%;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
         }
 
         /* Views management */
@@ -68,31 +70,44 @@
 
         /* Home Page Landing / Starting Dashboard Styling */
         .welcome-hero {
-            padding: 4rem 2rem;
+            padding: 6rem 4rem;
             background: var(--card-bg);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .welcome-hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-            letter-spacing: -0.03em;
+            font-size: 4.2rem; /* Massive title headers */
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.04em;
+            font-weight: 800;
         }
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 2.5rem;
         }
 
         .panel-box {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-box h2 {
+            font-size: 2.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
         }
 
         /* Questionnaire Multi-Screen Steps */
@@ -107,31 +122,37 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin: 2rem 0;
+            gap: 2.5rem;
+            margin: 3rem 0;
         }
 
         .form-item {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 1rem;
         }
 
         label {
-            font-size: 0.85rem;
+            font-size: 1.1rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
+            font-weight: bold;
         }
 
         select, input {
-            padding: 0.8rem;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            padding: 1.2rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
             color: white;
-            font-size: 1rem;
+            font-size: 1.3rem;
             outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--accent);
         }
 
         /* Call To Action Buttons */
@@ -139,99 +160,103 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 1.2rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: transform 0.1s, opacity 0.2s;
         }
 
-        .btn:hover { opacity: 0.9; }
+        .btn:hover { opacity: 0.95; }
+        .btn:active { transform: scale(0.98); }
 
         .btn-large {
-            font-size: 1.3rem;
-            padding: 1.2rem 3.5rem;
+            font-size: 1.8rem;
+            padding: 1.5rem 5rem;
             border-radius: 50px;
-            margin-top: 1.5rem;
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            margin-top: 2rem;
+            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
         }
 
         .btn-nav-group {
             display: flex;
             justify-content: space-between;
-            margin-top: 2rem;
-        }
-
-        /* Pricing Page Cards */
-        .pricing-tier-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+            margin-top: 3rem;
         }
 
         /* Structured Recommendation Deck Container */
         .recs-deck {
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
-            margin-top: 1.5rem;
+            gap: 2rem;
+            margin-top: 2.5rem;
         }
 
         .rec-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
             backdrop-filter: blur(8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .rec-card h3 {
+            font-size: 2.2rem;
+            margin: 0.5rem 0;
         }
 
         .rating-badge {
-            background: rgba(250, 204, 21, 0.15);
+            background: rgba(250, 204, 21, 0.2);
             color: #facc15;
-            padding: 0.25rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
             font-weight: bold;
         }
 
         .card-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 1rem;
         }
 
         .btn-maps {
             background: var(--success);
             text-decoration: none;
             color: white;
-            padding: 0.6rem 1.4rem;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.85rem;
+            padding: 1.2rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.2rem;
             display: inline-flex;
             align-items: center;
-            transition: background-color 0.2s;
+            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+            transition: background-color 0.2s, transform 0.1s;
         }
 
-        .btn-maps:hover {
-            background-color: #16a34a;
-        }
+        .btn-maps:hover { background-color: #15803d; }
+        .btn-maps:active { transform: scale(0.98); }
 
         .btn-sec {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
             color: white;
             border: none;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        @media(max-width: 768px) {
+        .btn-sec:hover { background: rgba(255, 255, 255, 0.2); }
+
+        @media(max-width: 1024px) {
             .form-grid, .dashboard-grid { grid-template-columns: 1fr; }
-            .rec-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .rec-card { flex-direction: column; align-items: flex-start; gap: 2rem; }
             .card-actions { width: 100%; justify-content: flex-end; }
         }
     </style>
@@ -240,7 +265,7 @@
 
     <header>
         <div class="logo" onclick="showView('homeView')">UpNext</div>
-        <div style="font-size: 0.9rem; color: var(--text-muted);">Activity Engine</div>
+        <div style="font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">Activity Engine</div>
     </header>
 
     <div class="container">
@@ -248,7 +273,7 @@
         <section id="homeView" class="view-section active-view">
             <div class="welcome-hero">
                 <h1>Stop Scrolling. Start Exploring.</h1>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.5;">
+                <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.6; font-size: 1.4rem;">
                     UpNext eliminates endless decision paralysis. Get exactly 10 verified, immediate, and completely customized local choices configured to match your exact vibe parameters.
                 </p>
                 <button class="btn btn-large" onclick="showView('questionnaireView')">Start Questionnaire</button>
@@ -257,12 +282,12 @@
             <div class="dashboard-grid">
                 <div class="panel-box">
                     <h3>Saved & Scheduled Plans</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;" id="calendarStatus">No upcoming bookings. Generate choices and schedule plans to populate your agenda.</p>
-                    <div id="calendarList" style="margin-top: 1rem;"></div>
+                    <p style="color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem;" id="calendarStatus">No upcoming bookings. Generate choices and schedule plans to populate your agenda.</p>
+                    <div id="calendarList" style="margin-top: 1.5rem;"></div>
                 </div>
                 <div class="panel-box">
                     <h3>Favorites Hub ❤️</h3>
-                    <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+                    <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem;">
                         <li>No bookmarks saved into your favorite locker yet.</li>
                     </ul>
                 </div>
@@ -275,7 +300,7 @@
                 <h2>Activity Diagnostics Intake</h2>
                 
                 <div id="qStep1" class="step-group active-step">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 1 of 4: Vibe Alignment</p>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 1 of 4: Vibe Alignment</p>
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Desired Mood Focus</label>
@@ -303,7 +328,7 @@
                 </div>
 
                 <div id="qStep2" class="step-group">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 2 of 4: Structural Scale</p>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 2 of 4: Structural Scale</p>
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Headcount / Group Size</label>
@@ -324,7 +349,7 @@
                 </div>
 
                 <div id="qStep3" class="step-group">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 3 of 4: Logistics Filters</p>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 3 of 4: Logistics Filters</p>
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Available Time Allotment (Minutes)</label>
@@ -339,7 +364,7 @@
                 </div>
 
                 <div id="qStep4" class="step-group">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Screen 4 of 4: Spatial Boundaries</p>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 4 of 4: Spatial Boundaries</p>
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Environment Setting Preference</label>
@@ -361,41 +386,15 @@
         </section>
 
 
-        <section id="paywallView" class="view-section">
-            <div class="panel-box" style="text-align: center;">
-                <h2>Engine Allocation Threshold Reached</h2>
-                <p style="color: var(--text-muted)">Please update your active subscription status to enable continuous matching cycles.</p>
-                <div class="pricing-tier-grid">
-                    <div class="panel-box" style="background: rgba(0,0,0,0.2)">
-                        <h3>Free Profile Evaluation</h3>
-                        <p id="trialTokenStatus" style="font-weight: bold; margin: 1rem 0; color: #facc15;">3 of 3 sessions remaining</p>
-                        <button class="btn" style="width: 100%" onclick="bypassPaywall()">Continue Trial Path</button>
-                    </div>
-                    <div class="panel-box" style="border: 2px solid var(--accent)">
-                        <h3>UpNext Pro</h3>
-                        <p style="font-weight: bold; margin: 1rem 0; font-size: 1.5rem;">$4.99 / mo</p>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Infinite generation processes, zero query ceilings, live sync routing elements.</p>
-                        <button class="btn" style="width: 100%" onclick="purchaseTier('Pro')">Subscribe Natively</button>
-                    </div>
-                    <div class="panel-box" style="background: rgba(0,0,0,0.2)">
-                        <h3>Pay As You Go</h3>
-                        <p style="font-weight: bold; margin: 1rem 0; font-size: 1.5rem;">$0.99 / session</p>
-                        <button class="btn" style="width: 100%" onclick="purchaseTier('PayAsYouGo')">Pay & Execute</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
         <section id="resultsView" class="view-section">
-            <h2 id="resultsHeader">Tailored Recommendations Matrix</h2>
+            <h2 id="resultsHeader" style="font-size: 2.8rem; margin-bottom: 1.5rem;">Tailored Recommendations Matrix</h2>
             <div id="outputDeck" class="recs-deck"></div>
         </section>
 
     </div>
 
     <script>
-        // Real-world, generic search keywords
+        // Real-world, generic search keywords that query dynamically over official parameters
         const mockDatabase = [
             { name: "Top Escape Rooms nearby", cat: "Escape Room", mood: "Adventure", energy: "Very High", out: false, budget: 30, rating: 4.9, revs: 142 },
             { name: "Bowling Alley nearby", cat: "Bowling Alley", mood: "Social", energy: "Very High", out: false, budget: 15, rating: 4.4, revs: 310 },
@@ -409,8 +408,6 @@
             { name: "Arcade and Gaming Lounges nearby", cat: "Arcade", mood: "Social", energy: "Very High", out: false, budget: 12, rating: 4.6, revs: 512 }
         ];
 
-        let freeSessions = 3;
-        let profileTier = "Free";
         let savedFavorites = [];
 
         function showView(viewId) {
@@ -423,51 +420,29 @@
             document.getElementById(`qStep${stepNum}`).classList.add('active-step');
         }
 
-        function purchaseTier(tier) {
-            profileTier = tier;
-            alert(`Profile transaction success! Status level: ${tier}`);
-            showView('questionnaireView');
-        }
-
-        function bypassPaywall() {
-            if(freeSessions <= 0) {
-                alert("Evaluation limits expired. Choose an option to keep testing.");
-                return;
-            }
-            showView('questionnaireView');
-        }
-
+        // Enhanced, high-contrast palette loops to make color background settings pop vividly
         function mutateThemeWorkspace(mood) {
             const palettes = {
-                "Adventure": "linear-gradient(135deg, #0f172a 0%, #7c2d12 100%)",
-                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
-                "Creative": "linear-gradient(135deg, #0f172a 0%, #581c87 100%)",
-                "Social": "linear-gradient(135deg, #0f172a 0%, #713f12 100%)",
-                "Nature": "linear-gradient(135deg, #0f172a 0%, #064e3b 100%)",
-                "Romantic": "linear-gradient(135deg, #0f172a 0%, #831843 100%)",
-                "Productive": "linear-gradient(135deg, #0f172a 0%, #115e59 100%)",
-                "Nightlife": "linear-gradient(135deg, #0f172a 0%, #311042 100%)"
+                "Adventure": "linear-gradient(135deg, #111827 0%, #ea580c 100%)",
+                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #2563eb 100%)",
+                "Creative": "linear-gradient(135deg, #111827 0%, #7c3aed 100%)",
+                "Social": "linear-gradient(135deg, #0f172a 0%, #d97706 100%)",
+                "Nature": "linear-gradient(135deg, #0b0f19 0%, #059669 100%)",
+                "Romantic": "linear-gradient(135deg, #111827 0%, #db2777 100%)",
+                "Productive": "linear-gradient(135deg, #0f172a 0%, #0d9488 100%)",
+                "Nightlife": "linear-gradient(135deg, #090514 0%, #4c1d95 100%)"
             };
-            document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)";
+            document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%)";
         }
 
         function processEngineRun() {
-            if (profileTier === "Free") {
-                if (freeSessions <= 0) {
-                    showView('paywallView');
-                    return;
-                }
-                freeSessions--;
-                document.getElementById('trialTokenStatus').innerText = `${freeSessions} of 3 free sessions remaining`;
-            }
-
             const targetMood = document.getElementById('inputMood').value;
             mutateThemeWorkspace(targetMood);
 
             let matches = mockDatabase.filter(item => item.mood === targetMood);
             
             if (matches.length < 10) {
-                const complementary = mockDatabase.filter(item => item.mood !== targetMood);
+                const supplementary = mockDatabase.filter(item => item.mood !== targetMood);
                 matches = [...matches, ...supplementary].slice(0, 10);
             }
 
@@ -484,19 +459,18 @@
                 const card = document.createElement('div');
                 card.className = "rec-card";
                 
-                // FIXED: Uses official Search API parameters to strictly respect current user location coordinates
                 const mapQuery = encodeURIComponent(item.name);
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
                 card.innerHTML = `
                     <div>
-                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <div style="display:flex; gap:1rem; align-items:center;">
                             <span class="rating-badge">★ ${item.rating}</span>
-                            <span style="font-size:0.8rem; color:var(--text-muted)">(${item.revs} reviews)</span>
+                            <span style="font-size:1.1rem; color:var(--text-muted)">(${item.revs} reviews)</span>
                         </div>
-                        <h3 style="margin: 0.3rem 0">${item.name}</h3>
-                        <p style="font-size:0.85rem; color:var(--text-muted)">Category: ${item.cat} • Est. Budget: $${item.budget} • Real-time Search</p>
-                        <p style="font-size:0.85rem; color:var(--accent); margin-top:0.25rem;">Matches chosen preferences with an optimized user score profile.</p>
+                        <h3>${item.name}</h3>
+                        <p style="font-size:1.2rem; color:var(--text-muted)">Category: ${item.cat} • Est. Budget: $${item.budget} • Location Sync Enabled</p>
+                        <p style="font-size:1.1rem; color:##60a5fa; margin-top:0.5rem; font-weight:500;">Matches chosen preferences with an optimized user score profile.</p>
                     </div>
                     <div class="card-actions">
                         <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
@@ -514,7 +488,8 @@
                 const list = document.getElementById('favoritesList');
                 if(savedFavorites.length === 1) list.innerHTML = "";
                 const li = document.createElement('li');
-                li.style.marginTop = "0.4rem";
+                li.style.fontSize = "1.3rem";
+                li.style.padding = "0.5rem 0";
                 li.innerText = `⭐ ${name}`;
                 list.appendChild(li);
                 alert(`${name} added to favorites.`);
@@ -525,7 +500,7 @@
             const list = document.getElementById('calendarList');
             document.getElementById('calendarStatus').style.display = 'none';
             const item = document.createElement('div');
-            item.style = "background:rgba(0,0,0,0.2); padding:0.6rem; margin-bottom:0.5rem; border-radius:6px; font-size:0.9rem; border-left:3px solid var(--success);";
+            item.style = "background:rgba(0,0,0,0.3); padding:1.2rem; margin-bottom:1rem; border-radius:12px; font-size:1.2rem; border-left:6px solid var(--success); font-weight:600;";
             item.innerText = `📅 Planned: ${name} (Scheduled for immediate action)`;
             list.appendChild(item);
             alert(`Activity locked! ${name} is recorded to your dashboard schedule tracker.`);
