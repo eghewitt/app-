@@ -1,240 +1,463 @@
-import datetime
-from typing import List, Dict, Any, Optional
-
-# ==========================================
-# 1. CORE DATA MODELS & SCHEMAS
-# ==========================================
-
-class UserProfile:
-    def __init__(self, user_id: str, subscription_status: str = "Free"):
-        self.user_id = user_id
-        self.subscription_status = subscription_status  # "Free", "Pro", "PayAsYouGo"
-        self.free_sessions_remaining = 3
-        self.favorites: List[Dict[str, Any]] = []
-        self.history: List[Dict[str, Any]] = []
-        self.calendar: List[Dict[str, Any]] = []
-
-    def can_generate_recommendation(self) -> bool:
-        if self.subscription_status == "Pro":
-            return True
-        if self.subscription_status == "Free" and self.free_sessions_remaining > 0:
-            return True
-        return False
-
-    def consume_session(self):
-        if self.subscription_status == "Free" and self.free_sessions_remaining > 0:
-            self.free_sessions_remaining -= 1
-
-
-class ActivityPlace:
-    def __init__(self, name: str, category: str, tags: List[str], base_mood: str,
-                 budget: float, time_required: int, is_outdoor: bool, 
-                 rating: float, reviews_count: int, lat: float, lng: float):
-        self.name = name
-        self.category = category
-        self.tags = [t.lower() for t in tags]
-        self.base_mood = base_mood
-        self.budget = budget
-        self.time_required = time_required  # in minutes
-        self.is_outdoor = is_outdoor
-        self.rating = rating
-        self.reviews_count = reviews_count
-        self.lat = lat
-        self.lng = lng
-
-    def calculate_distance(self, user_lat: float, user_lng: float) -> float:
-        # Simple Euclidean approximation for local distance modeling
-        return ((self.lat - user_lat)**2 + (self.lng - user_lng)**2)**0.5 * 111.0
-
-
-# ==========================================
-# 2. SEED DATA (Simulating Live Google Maps Places Data)
-# ==========================================
-
-MOCK_PLACES_DATABASE = [
-    ActivityPlace("Enigma Escape Rooms", "Escape Room", ["high energy", "group", "social"], "Adventure", 30.0, 60, False, 4.9, 142, 34.0522, -118.2437),
-    ActivityPlace("Strike & Spare Bowling", "Bowling", ["high energy", "group", "social", "arcade"], "Social", 15.0, 90, False, 4.4, 310, 34.0550, -118.2460),
-    ActivityPlace("Apex Go-Kart Racing", "Go-Karting", ["high energy", "group", "outdoor", "active"], "Adventure", 45.0, 45, True, 4.7, 89, 34.0600, -118.2300),
-    ActivityPlace("Hidden Valley Trail", "Hiking Trail", ["high energy", "group", "outdoor", "nature", "active"], "Nature", 0.0, 180, True, 4.8, 1205, 34.0800, -118.2100),
-    ActivityPlace("The Daily Grind Café", "Coffee Shop", ["relaxing", "solo", "indoor", "productive"], "Relaxing", 5.0, 45, False, 4.5, 210, 34.0510, -118.2440),
-    ActivityPlace("Aroma Bean Roasters", "Coffee Shop", ["relaxing", "solo", "indoor"], "Relaxing", 6.0, 30, False, 4.3, 95, 34.0515, -118.2445),  # Potential duplicate category
-    ActivityPlace("Neon Retro Arcade", "Arcade", ["high energy", "group", "social", "indoor"], "Social", 10.0, 120, False, 4.6, 412, 34.0530, -118.2420),
-    ActivityPlace("Zen Meditation Center", "Wellness", ["relaxing", "solo", "indoor"], "Relaxing", 20.0, 60, False, 4.9, 64, 34.0490, -118.2500),
-    ActivityPlace("Bella Italia Ristorante", "Restaurant", ["social", "group", "indoor"], "Romantic", 40.0, 90, False, 4.6, 530, 34.0540, -118.2450),
-    ActivityPlace("Overlook Point Park", "Park", ["relaxing", "outdoor", "nature", "romantic"], "Nature", 0.0, 60, True, 4.7, 843, 34.0700, -118.2200),
-    ActivityPlace("Cloud Nine Trampoline Park", "Trampoline Park", ["high energy", "group", "active", "indoor"], "Social", 22.0, 90, False, 4.5, 175, 34.0650, -118.2550),
-    ActivityPlace("Metropolitan Museum of Art", "Museum", ["creative", "solo", "group", "indoor"], "Creative", 15.0, 150, False, 4.8, 2300, 34.0520, -118.2410),
-]
-
-
-# ==========================================
-# 3. ENGINE IMPLEMENTATION (Recommendation & Filtering)
-# ==========================================
-
-class UpNextEngine:
-    @staticmethod
-    def get_dynamic_theme(dominant_mood: str) -> Dict[str, str]:
-        themes = {
-            "Adventure": {"bg": "#FF4500", "text": "#FFFFFF", "vibe": "Deep Orange & Red"},
-            "Relaxing": {"bg": "#87CEEB", "text": "#111111", "vibe": "Soft Blue"},
-            "Creative": {"bg": "#8A2BE2", "text": "#FFFFFF", "vibe": "Purple"},
-            "Social": {"bg": "#FFD700", "text": "#111111", "vibe": "Warm Yellow"},
-            "Nature": {"bg": "#228B22", "text": "#FFFFFF", "vibe": "Green"},
-            "Romantic": {"bg": "#FF69B4", "text": "#FFFFFF", "vibe": "Pink & Sunset Tones"},
-            "Productive": {"bg": "#4682B4", "text": "#FFFFFF", "vibe": "Clean Blue"},
-            "Nightlife": {"bg": "#4B0082", "text": "#FFFFFF", "vibe": "Dark Purple"}
-        }
-        return themes.get(dominant_mood, {"bg": "#FFFFFF", "text": "#000000", "vibe": "Modern Light"})
-
-    @staticmethod
-    def generate_recommendations(user: UserProfile, questionnaire: Dict[str, Any], 
-                                     lat: float, lng: float) -> Dict[str, Any]:
-        if not user.can_generate_recommendation():
-            return {"status": "error", "message": "Subscription restriction. Upgrade or buy a session."}
-        
-        user.consume_session()
-        
-        scored_places = []
-        for place in MOCK_PLACES_DATABASE:
-            # Hard Filters (Budget, Time, Environment)
-            if place.budget > questionnaire.get("budget", float('inf')):
-                continue
-            if place.time_required > questionnaire.get("available_time", 999):
-                continue
-            if questionnaire.get("indoor_outdoor") == "Indoor" and place.is_outdoor:
-                continue
-            if questionnaire.get("indoor_outdoor") == "Outdoor" and not place.is_outdoor:
-                continue
-            
-            # Calculate Distance Bounds
-            distance = place.calculate_distance(lat, lng)
-            if distance > questionnaire.get("max_distance", 50.0):
-                continue
-                
-            # Scoring Matrix Engine
-            score = 0.0
-            if place.base_mood.lower() == questionnaire.get("mood", "").lower():
-                score += 40.0
-            
-            # Tag Matching Calculation
-            matched_tags = set(place.tags).intersection(set([t.lower() for t in questionnaire.get("interests", [])]))
-            score += len(matched_tags) * 15.0
-            
-            # Energy alignment
-            if questionnaire.get("energy_level") == "Very High" and "high energy" in place.tags:
-                score += 20.0
-            
-            # Group check
-            if questionnaire.get("group_size", 1) >= 5 and "group" in place.tags:
-                score += 15.0
-
-            # Quality metrics booster
-            score += place.rating * 2.0
-
-            scored_places.append((score, place, distance))
-            
-        # Sort sequentially by calculated relevance score descending
-        scored_places.sort(key=lambda x: x[0], reverse=True)
-        
-        # Semantic Category Deduplication Filtering Loop
-        final_recommendations = []
-        seen_categories = set()
-        
-        for score, place, dist in scored_places:
-            if place.category in seen_categories:
-                continue # Skip repetitive matches (e.g., skips secondary coffee shop)
-            
-            seen_categories.add(place.category)
-            
-            # Construct JSON Response payload format matching specifications
-            final_recommendations.append({
-                "business_name": place.name,
-                "category": place.category,
-                "relevance_score": round(score, 1),
-                "distance_km": round(dist, 2),
-                "rating": place.rating,
-                "reviews_count": place.reviews_count,
-                "why_recommended": f"Matches your requested {place.base_mood} mood with an optimized score profile.",
-                "actions": {
-                    "get_me_there_url": f"https://www.google.com/maps/dir/?api=1&destination={place.lat},{place.lng}",
-                    "save_for_later": True,
-                    "schedule_activity": True
-                }
-            })
-            
-            if len(final_recommendations) == 10:
-                break
-                
-        # Handle dynamic fallback logic to safely ensure 10 items if database allows
-        dominant_mood = questionnaire.get("mood", "Social")
-        
-        return {
-            "status": "success",
-            "ui_theme": UpNextEngine.get_dynamic_theme(dominant_mood),
-            "total_found": len(final_recommendations),
-            "recommendations": final_recommendations
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UpNext — Stop Scrolling, Start Exploring</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --transition: all 0.4s ease;
         }
 
-    @staticmethod
-    def quick_search(query: str, lat: float, lng: float) -> List[Dict[str, Any]]:
-        results = []
-        query_clean = query.lower()
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-bar {
+            flex: 0 1 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-secondary);
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Pricing Section */
+        .pricing-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .price-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .price-card.featured {
+            border: 2px solid var(--accent);
+            transform: scale(1.03);
+        }
+
+        .badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Questionnaire Subsystem */
+        .quiz-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quiz-step {
+            display: none;
+        }
+
+        .quiz-step.active {
+            display: block;
+        }
+
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        select, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        /* Recommendation Deck */
+        .deck-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+        }
+
+        .recommendations-deck {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .rec-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .meta-group h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .rating-pill {
+            background: rgba(250, 204, 21, 0.2);
+            color: #facc15;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .action-cluster {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .action-cluster a, .action-cluster button {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-nav {
+            background: #22c55e;
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2x2 { grid-template-columns: 1fr; }
+            .rec-card { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .action-cluster { width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">UpNext</div>
+        <div class="search-bar">
+            <input type="text" id="quickSearchInput" placeholder="Quick Search (e.g., Pizza, Bowling, Café)..." onkeyup="executeQuickSearch(event)">
+        </div>
+    </header>
+
+    <div class="container">
         
-        for place in MOCK_PLACES_DATABASE:
-            # Direct exact match or categorical subset contains verification
-            if query_clean in place.name.lower() or query_clean in place.category.lower() or any(query_clean in t for t in place.tags):
-                dist = place.calculate_distance(lat, lng)
-                results.append({
-                    "business_name": place.name,
-                    "category": place.category,
-                    "distance_km": round(dist, 2),
-                    "rating": place.rating,
-                    "actions": {
-                        "get_me_there_url": f"https://www.google.com/maps/dir/?api=1&destination={place.lat},{place.lng}"
-                    }
-                })
-        return results
+        <section class="pricing-container">
+            <div class="price-card">
+                <div>
+                    <h3>Free Trial</h3>
+                    <div class="price">$0.00</div>
+                    <p style="color: var(--text-muted)" id="trialStatus">3 of 3 free sessions remaining.</p>
+                </div>
+                <button class="btn" onclick="closePricing()">Continue Free</button>
+            </div>
+            <div class="price-card featured">
+                <div class="badge">Recommended</div>
+                <div>
+                    <h3>UpNext Pro</h3>
+                    <div class="price">$4.99<span style="font-size: 1rem">/mo</span></div>
+                    <p style="color: var(--text-muted)">Unlimited recommendation sessions, faster processing & live mapping tools.</p>
+                </div>
+                <button class="btn" onclick="setPlan('Pro')">Subscribe Now</button>
+            </div>
+            <div class="price-card">
+                <div>
+                    <h3>Pay As You Go</h3>
+                    <div class="price">$0.99<span style="font-size: 1rem">/session</span></div>
+                    <p style="color: var(--text-muted)">Perfect for occasional users. Pay dynamically per questionnaire execution.</p>
+                </div>
+                <button class="btn" onclick="setPlan('PayAsYouGo')">Pay & Continue</button>
+            </div>
+        </section>
 
+        <section class="quiz-panel" id="quizPanel">
+            <h2 style="margin-bottom: 0.5rem">Find Your Next Move</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem">Skip the scroll. Tell us your conditions, and get your perfect agenda instantly.</p>
+            
+            <div class="quiz-step active" id="step1">
+                <div class="grid-2x2">
+                    <div>
+                        <label>Desired Mood</label>
+                        <select id="moodSelect">
+                            <option value="Adventure">Adventure 🌄</option>
+                            <option value="Relaxing">Relaxing 🌊</option>
+                            <option value="Creative">Creative 🎨</option>
+                            <option value="Social" selected>Social 🎉</option>
+                            <option value="Nature">Nature 🌿</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Energy Level</label>
+                        <select id="energySelect">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Very High">Very High</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" style="width: auto; float: right;" onclick="nextStep(2)">Next Screen</button>
+            </div>
 
-# ==========================================
-# 4. SIMULATED SYSTEM TEST WALKTHROUGH
-# ==========================================
+            <div class="quiz-step" id="step2">
+                <div class="grid-2x2">
+                    <div>
+                        <label>Group Size</label>
+                        <input type="number" id="groupSizeInput" value="1" min="1">
+                    </div>
+                    <div>
+                        <label>Who Are You With?</label>
+                        <select id="companionshipSelect">
+                            <option value="Solo">Solo</option>
+                            <option value="Partner">Date / Partner</option>
+                            <option value="Friends">Friends Group</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
+                    <button class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 8px" onclick="nextStep(1)">Back</button>
+                    <button class="btn" style="width: auto; margin-top: 0;" onclick="nextStep(3)">Next Screen</button>
+                </div>
+            </div>
 
-if __name__ == "__main__":
-    print("=== INITIALIZING UPNEXT BACKEND PIPELINE SPECIFICATION TESTS ===")
-    
-    # 1. Initialize Profiles
-    test_user = UserProfile(user_id="usr_77a9x", subscription_status="Free")
-    user_coords = (34.0522, -118.2437) # Central Test Coordinates
-    
-    # 2. Structured Onboarding Questionnaire Layout Data
-    # Simulates Screen Grouping Architecture: [Screen 1: Mood/Energy], [Screen 2: Party Context], etc.
-    questionnaire_payload = {
-        "mood": "Adventure",
-        "energy_level": "Very High",
-        "group_size": 10,
-        "who_with": "Friends Group",
-        "available_time": 120,
-        "budget": 50.0,
-        "indoor_outdoor": "Any",
-        "max_distance": 25.0,
-        "interests": ["active", "group", "social", "arcade"]
-    }
-    
-    print(f"\n[Status] Processing Engine Run. Remaining Trials: {test_user.free_sessions_remaining}")
-    response = UpNextEngine.generate_recommendations(test_user, questionnaire_payload, user_coords[0], user_coords[1])
-    
-    print(f"[Theme Engine Verdict] Target UI Color Pallete: {response['ui_theme']['vibe']}")
-    print(f"[Engine Output Verification] Generated Rec Count: {len(response['recommendations'])}")
-    
-    for idx, rec in enumerate(response['recommendations'], 1):
-        print(f"  {idx}. {rec['business_name']} [{rec['category']}] -> Score: {rec['relevance_score']} | Dist: {rec['distance_km']}km")
-        print(f"     Nav: {rec['actions']['get_me_there_url']}")
+            <div class="quiz-step" id="step3">
+                <div class="grid-2x2">
+                    <div>
+                        <label>Available Time (Mins)</label>
+                        <input type="number" id="timeInput" value="120" step="30">
+                    </div>
+                    <div>
+                        <label>Budget Limit ($)</label>
+                        <input type="number" id="budgetInput" value="50" step="10">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
+                    <button class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 8px" onclick="nextStep(2)">Back</button>
+                    <button class="btn" style="width: auto; margin-top: 0;" onclick="generateRecs()">Generate Matches</button>
+                </div>
+            </div>
+        </section>
 
-    # 3. Test Quick Search Functionality
-    print("\n=== RUNNING QUICK SEARCH SUBSYSTEM VERIFICATION ===")
-    search_query = "Bowling"
-    search_results = UpNextEngine.quick_search(search_query, user_coords[0], user_coords[1])
-    print(f"Quick Search Results for '{search_query}':")
-    for item in search_results:
-        print(f"  - {item['business_name']} ({item['category']}) - Dist: {item['distance_km']}km")
+        <h2 class="deck-title" id="deckHeader">Top Recommendations</h2>
+        <div class="recommendations-deck" id="recsDeck">
+            <p style="color: var(--text-muted)">Fill out the questionnaire above or use Quick Search to see real runtime recommendation paths.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Mock Location-Based Places Database Core
+        const database = [
+            { name: "Enigma Escape Rooms", category: "Escape Room", mood: "Adventure", energy: "Very High", maxGroup: 10, budget: 35, dist: "1.2 km", rating: "4.9", mapUrl: "https://maps.google.com" },
+            { name: "Strike & Spare Bowling", category: "Bowling Alley", mood: "Social", energy: "Very High", maxGroup: 12, budget: 15, dist: "2.4 km", rating: "4.6", mapUrl: "https://maps.google.com" },
+            { name: "The Daily Grind Café", category: "Coffee Shop", mood: "Relaxing", energy: "Low", maxGroup: 3, budget: 8, dist: "0.4 km", rating: "4.5", mapUrl: "https://maps.google.com" },
+            { name: "Apex Go-Kart Racing", category: "Sports Venue", mood: "Adventure", energy: "Very High", maxGroup: 8, budget: 45, dist: "4.8 km", rating: "4.8", mapUrl: "https://maps.google.com" },
+            { name: "Metropolitan Museum of Art", category: "Museum", mood: "Creative", energy: "Medium", maxGroup: 6, budget: 20, dist: "3.1 km", rating: "4.7", mapUrl: "https://maps.google.com" },
+            { name: "Hidden Valley Trail", category: "Hiking Trail", mood: "Nature", energy: "Very High", maxGroup: 15, budget: 0, dist: "5.0 km", rating: "4.9", mapUrl: "https://maps.google.com" }
+        ];
+
+        let freeSessions = 3;
+        let activePlan = "Free";
+
+        function nextStep(stepNum) {
+            document.querySelectorAll('.quiz-step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step${stepNum}`).classList.add('active');
+        }
+
+        function setPlan(planName) {
+            activePlan = planName;
+            alert(`Switched engine routing context to: ${planName}`);
+        }
+
+        function closePricing() {
+            alert("Running with Remaining Free Dynamic Tokens");
+        }
+
+        // Real-Time Dynamic Mood Palette Engine Integration
+        function applyDynamicTheme(mood) {
+            const themes = {
+                "Adventure": "linear-gradient(135deg, #0f172a 0%, #7c2d12 100%)",
+                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
+                "Creative": "linear-gradient(135deg, #0f172a 0%, #581c87 100%)",
+                "Social": "linear-gradient(135deg, #0f172a 0%, #713f12 100%)",
+                "Nature": "linear-gradient(135deg, #0f172a 0%, #064e3b 100%)"
+            };
+            document.body.style.background = themes[mood] || "#0f172a";
+        }
+
+        function generateRecs() {
+            if (activePlan === "Free" && freeSessions <= 0) {
+                alert("Please purchase tokens or subscribe to standard tiers.");
+                return;
+            }
+            if (activePlan === "Free") {
+                freeSessions--;
+                document.getElementById('trialStatus').innerText = `${freeSessions} of 3 free recommendation sessions remaining.`;
+            }
+
+            const selectedMood = document.getElementById('moodSelect').value;
+            applyDynamicTheme(selectedMood);
+
+            const filtered = database.filter(item => item.mood === selectedMood);
+            renderDeck(filtered);
+        }
+
+        function executeQuickSearch(event) {
+            if (event.key === "Enter" || event.keyCode === 13) {
+                const query = document.getElementById('quickSearchInput').value.toLowerCase();
+                const filtered = database.filter(item => 
+                    item.name.toLowerCase().includes(query) || 
+                    item.category.toLowerCase().includes(query)
+                );
+                document.getElementById('deckHeader').innerText = `Quick Search Matches for "${query}"`;
+                renderDeck(filtered);
+            }
+        }
+
+        function renderDeck(matches) {
+            const container = document.getElementById('recsDeck');
+            container.innerHTML = "";
+
+            if (matches.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted)">No operational matches found in near geo-fence constraints.</p>`;
+                return;
+            }
+
+            matches.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "rec-card";
+                card.innerHTML = `
+                    <div class="meta-group">
+                        <span class="rating-pill">★ ${item.rating}</span>
+                        <h3 style="margin-top: 0.4rem">${item.name}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.85rem">${item.category} • ${item.dist} away • Est: $${item.budget}</p>
+                    </div>
+                    <div class="action-cluster">
+                        <button class="btn-secondary">Save</button>
+                        <a href="${item.mapUrl}" target="_blank" class="btn-nav">Get Me There →</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
