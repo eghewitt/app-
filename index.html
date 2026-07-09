@@ -6,9 +6,10 @@
     <title>UpNext — Your Personal Activity Assistant</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%);
+            /* Locked to a premium deep blue-purple foundation */
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #2e1065 100%);
             --card-bg: rgba(30, 41, 59, 0.85);
-            --accent: #2563eb;
+            --accent: #6366f1;
             --text-main: #ffffff;
             --text-muted: #cbd5e1;
             --success: #16a34a;
@@ -27,7 +28,7 @@
             min-height: 100vh;
             transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-x: hidden;
-            font-size: 1.2rem; /* Scaled up default typography base */
+            font-size: 1.2rem;
         }
 
         header {
@@ -47,19 +48,18 @@
             font-size: 2.2rem;
             font-weight: 900;
             cursor: pointer;
-            background: linear-gradient(to right, #3b82f6, #a855f7);
+            background: linear-gradient(to right, #818cf8, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .container {
-            max-width: 1600px; /* Widened from 1100px to fill the page layout natively */
+            max-width: 1600px;
             width: 95%;
             margin: 3rem auto;
             padding: 0 1.5rem;
         }
 
-        /* Views management */
         .view-section {
             display: none;
         }
@@ -68,7 +68,6 @@
             display: block;
         }
 
-        /* Home Page Landing / Starting Dashboard Styling */
         .welcome-hero {
             padding: 6rem 4rem;
             background: var(--card-bg);
@@ -80,7 +79,7 @@
         }
 
         .welcome-hero h1 {
-            font-size: 4.2rem; /* Massive title headers */
+            font-size: 4.2rem;
             margin-bottom: 1.5rem;
             letter-spacing: -0.04em;
             font-weight: 800;
@@ -110,7 +109,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Questionnaire Multi-Screen Steps */
         .step-group {
             display: none;
         }
@@ -155,7 +153,6 @@
             border-color: var(--accent);
         }
 
-        /* Call To Action Buttons */
         .btn {
             background: var(--accent);
             color: white;
@@ -176,7 +173,7 @@
             padding: 1.5rem 5rem;
             border-radius: 50px;
             margin-top: 2rem;
-            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
         }
 
         .btn-nav-group {
@@ -185,7 +182,6 @@
             margin-top: 3rem;
         }
 
-        /* Structured Recommendation Deck Container */
         .recs-deck {
             display: flex;
             flex-direction: column;
@@ -254,6 +250,22 @@
 
         .btn-sec:hover { background: rgba(255, 255, 255, 0.2); }
 
+        /* Custom style class for clickable list item targets */
+        .favorite-anchor {
+            display: block;
+            color: #818cf8;
+            text-decoration: none;
+            padding: 0.6rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .favorite-anchor:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: white;
+        }
+
         @media(max-width: 1024px) {
             .form-grid, .dashboard-grid { grid-template-columns: 1fr; }
             .rec-card { flex-direction: column; align-items: flex-start; gap: 2rem; }
@@ -264,7 +276,7 @@
 <body>
 
     <header>
-        <div class="logo" onclick="showView('homeView')">UpNext</div>
+        <div class="logo" onclick="resetToHome()">UpNext</div>
         <div style="font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">Activity Engine</div>
     </header>
 
@@ -286,8 +298,8 @@
                     <div id="calendarList" style="margin-top: 1.5rem;"></div>
                 </div>
                 <div class="panel-box">
-                    <h3>Favorites Hub ❤️</h3>
-                    <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <h3>Favorites Hub Hub ❤️ (Click to Map)</h3>
+                    <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 1.2rem; display: flex; flex-direction: column; gap: 0.75rem;">
                         <li>No bookmarks saved into your favorite locker yet.</li>
                     </ul>
                 </div>
@@ -352,11 +364,11 @@
                     <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 3 of 4: Logistics Filters</p>
                     <div class="form-grid">
                         <div class="form-item">
-                            <label>Available Time Allotment (Minutes)</label>
-                            <input type="number" id="inputTime" value="120" step="30">
+                            <label>Available Time Allotment (Hours)</label>
+                            <input type="number" id="inputTime" value="2.5" step="0.5" min="0.5">
                         </div>
                         <div class="form-item">
-                            <label>Maximum Budget Cap ($)</label>
+                            <label>Maximum Budget Cap (€/$)</label>
                             <input type="number" id="inputBudget" value="60" step="10">
                         </div>
                     </div>
@@ -375,8 +387,8 @@
                             </select>
                         </div>
                         <div class="form-item">
-                            <label>Maximum Displacement Radius (Miles)</label>
-                            <input type="number" id="inputRadius" value="15">
+                            <label>Maximum Displacement Radius (Kilometers)</label>
+                            <input type="number" id="inputRadius" value="25">
                         </div>
                     </div>
                     <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Generate Recommendations</button></div>
@@ -394,7 +406,6 @@
     </div>
 
     <script>
-        // Real-world, generic search keywords that query dynamically over official parameters
         const mockDatabase = [
             { name: "Top Escape Rooms nearby", cat: "Escape Room", mood: "Adventure", energy: "Very High", out: false, budget: 30, rating: 4.9, revs: 142 },
             { name: "Bowling Alley nearby", cat: "Bowling Alley", mood: "Social", energy: "Very High", out: false, budget: 15, rating: 4.4, revs: 310 },
@@ -415,12 +426,18 @@
             document.getElementById(viewId).classList.add('active-view');
         }
 
+        function resetToHome() {
+            // Restore native blue-purple view values on clicking logo homepage
+            document.body.style.background = "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #2e1065 100%)";
+            showView('homeView');
+        }
+
         function goToStep(stepNum) {
             document.querySelectorAll('.step-group').forEach(s => s.classList.remove('active-step'));
             document.getElementById(`qStep${stepNum}`).classList.add('active-step');
         }
 
-        // Enhanced, high-contrast palette loops to make color background settings pop vividly
+        // Palette updates only fire here at the generation end cycle
         function mutateThemeWorkspace(mood) {
             const palettes = {
                 "Adventure": "linear-gradient(135deg, #111827 0%, #ea580c 100%)",
@@ -462,6 +479,11 @@
                 const mapQuery = encodeURIComponent(item.name);
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
+                // Generate real Google Calendar render payload template links
+                const calText = encodeURIComponent(`UpNext Booking: ${item.name}`);
+                const calDetails = encodeURIComponent(`Enjoy your matched activity engine recommendation session for category: ${item.cat}`);
+                const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${calText}&details=${calDetails}&sf=true&output=xml`;
+
                 card.innerHTML = `
                     <div>
                         <div style="display:flex; gap:1rem; align-items:center;">
@@ -469,12 +491,12 @@
                             <span style="font-size:1.1rem; color:var(--text-muted)">(${item.revs} reviews)</span>
                         </div>
                         <h3>${item.name}</h3>
-                        <p style="font-size:1.2rem; color:var(--text-muted)">Category: ${item.cat} • Est. Budget: $${item.budget} • Location Sync Enabled</p>
-                        <p style="font-size:1.1rem; color:##60a5fa; margin-top:0.5rem; font-weight:500;">Matches chosen preferences with an optimized user score profile.</p>
+                        <p style="font-size:1.2rem; color:var(--text-muted)">Category: ${item.cat} • Est. Budget: €/${item.budget} • Location Sync Enabled</p>
+                        <p style="font-size:1.1rem; color:#60a5fa; margin-top:0.5rem; font-weight:500;">Matches chosen preferences with an optimized user score profile.</p>
                     </div>
                     <div class="card-actions">
                         <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
-                        <button class="btn-sec" onclick="bookItem('${item.name}')">📅 Schedule</button>
+                        <a href="${googleCalendarUrl}" target="_blank" class="btn-sec" style="text-decoration:none; display:inline-flex; align-items:center;">📅 Schedule</a>
                         <a href="${mapsUrl}" target="_blank" class="btn-maps">Get Me There</a>
                     </div>
                 `;
@@ -487,23 +509,18 @@
                 savedFavorites.push(name);
                 const list = document.getElementById('favoritesList');
                 if(savedFavorites.length === 1) list.innerHTML = "";
+                
                 const li = document.createElement('li');
-                li.style.fontSize = "1.3rem";
-                li.style.padding = "0.5rem 0";
-                li.innerText = `⭐ ${name}`;
+                const mapQuery = encodeURIComponent(name);
+                
+                // Generates an anchor element allowing users to launch right into Google Maps straight from the dashboard hub
+                li.innerHTML = `
+                    <a class="favorite-anchor" href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank">
+                        ⭐ ${name} <span style="float:right; font-size:0.9rem; opacity:0.7;">📍 View Map ➔</span>
+                    </a>
+                `;
                 list.appendChild(li);
-                alert(`${name} added to favorites.`);
             }
-        }
-
-        function bookItem(name) {
-            const list = document.getElementById('calendarList');
-            document.getElementById('calendarStatus').style.display = 'none';
-            const item = document.createElement('div');
-            item.style = "background:rgba(0,0,0,0.3); padding:1.2rem; margin-bottom:1rem; border-radius:12px; font-size:1.2rem; border-left:6px solid var(--success); font-weight:600;";
-            item.innerText = `📅 Planned: ${name} (Scheduled for immediate action)`;
-            list.appendChild(item);
-            alert(`Activity locked! ${name} is recorded to your dashboard schedule tracker.`);
         }
     </script>
 </body>
