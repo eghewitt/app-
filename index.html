@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UpNext — Stop Scrolling, Start Exploring</title>
+    <title>UpNext — Your Personal Activity Assistant</title>
     <style>
         :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent: #3b82f6;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --accent: #3b82f6;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --transition: all 0.4s ease;
+            --success: #22c55e;
         }
 
         * {
@@ -23,21 +22,21 @@
         }
 
         body {
-            background-color: var(--bg-primary);
+            background: var(--bg-gradient);
             color: var(--text-main);
             min-height: 100vh;
-            transition: var(--transition);
+            transition: background 0.8s ease;
             overflow-x: hidden;
         }
 
         header {
-            padding: 1.5rem 2rem;
+            padding: 1.25rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -46,418 +45,78 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: -0.05em;
+            cursor: pointer;
             background: linear-gradient(to right, #3b82f6, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .search-bar {
+        .search-container {
             flex: 0 1 400px;
-            position: relative;
         }
 
-        .search-bar input {
+        .search-container input {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: var(--bg-secondary);
+            background: rgba(0, 0, 0, 0.3);
             color: white;
-            font-size: 0.9rem;
             outline: none;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
-        /* Pricing Section */
-        .pricing-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .price-card {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .price-card.featured {
-            border: 2px solid var(--accent);
-            transform: scale(1.03);
-        }
-
-        .badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: white;
-            padding: 0.25rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .price {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 1rem 0;
-        }
-
-        .btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 1.5rem;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Questionnaire Subsystem */
-        .quiz-panel {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 2.5rem;
-            margin-bottom: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .quiz-step {
+        /* Views management */
+        .view-section {
             display: none;
         }
 
-        .quiz-step.active {
+        .view-section.active-view {
             display: block;
         }
 
-        .grid-2x2 {
+        /* Home Page Dashboard styling */
+        .welcome-hero {
+            padding: 3rem 2rem;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        select, input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 0.75rem;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: white;
-            outline: none;
-        }
-
-        /* Recommendation Deck */
-        .deck-title {
-            margin-bottom: 1.5rem;
-            font-size: 1.75rem;
-        }
-
-        .recommendations-deck {
-            display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 1.5rem;
         }
 
-        .rec-card {
+        .panel-box {
             background: var(--card-bg);
             border-radius: 16px;
             padding: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
         }
 
-        .meta-group h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
+        /* Questionnaire Steps */
+        .step-group {
+            display: none;
         }
 
-        .rating-pill {
-            background: rgba(250, 204, 21, 0.2);
-            color: #facc15;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
+        .step-group.active-step {
+            display: block;
         }
 
-        .action-cluster {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .action-cluster a, .action-cluster button {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-nav {
-            background: #22c55e;
-            color: white;
-            border: none;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-        }
-
-        @media (max-width: 768px) {
-            .grid-2x2 { grid-template-columns: 1fr; }
-            .rec-card { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-            .action-cluster { width: 100%; justify-content: space-between; }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="logo">UpNext</div>
-        <div class="search-bar">
-            <input type="text" id="quickSearchInput" placeholder="Quick Search (e.g., Pizza, Bowling, Café)..." onkeyup="executeQuickSearch(event)">
-        </div>
-    </header>
-
-    <div class="container">
-        
-        <section class="pricing-container">
-            <div class="price-card">
-                <div>
-                    <h3>Free Trial</h3>
-                    <div class="price">$0.00</div>
-                    <p style="color: var(--text-muted)" id="trialStatus">3 of 3 free sessions remaining.</p>
-                </div>
-                <button class="btn" onclick="closePricing()">Continue Free</button>
-            </div>
-            <div class="price-card featured">
-                <div class="badge">Recommended</div>
-                <div>
-                    <h3>UpNext Pro</h3>
-                    <div class="price">$4.99<span style="font-size: 1rem">/mo</span></div>
-                    <p style="color: var(--text-muted)">Unlimited recommendation sessions, faster processing & live mapping tools.</p>
-                </div>
-                <button class="btn" onclick="setPlan('Pro')">Subscribe Now</button>
-            </div>
-            <div class="price-card">
-                <div>
-                    <h3>Pay As You Go</h3>
-                    <div class="price">$0.99<span style="font-size: 1rem">/session</span></div>
-                    <p style="color: var(--text-muted)">Perfect for occasional users. Pay dynamically per questionnaire execution.</p>
-                </div>
-                <button class="btn" onclick="setPlan('PayAsYouGo')">Pay & Continue</button>
-            </div>
-        </section>
-
-        <section class="quiz-panel" id="quizPanel">
-            <h2 style="margin-bottom: 0.5rem">Find Your Next Move</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem">Skip the scroll. Tell us your conditions, and get your perfect agenda instantly.</p>
-            
-            <div class="quiz-step active" id="step1">
-                <div class="grid-2x2">
-                    <div>
-                        <label>Desired Mood</label>
-                        <select id="moodSelect">
-                            <option value="Adventure">Adventure 🌄</option>
-                            <option value="Relaxing">Relaxing 🌊</option>
-                            <option value="Creative">Creative 🎨</option>
-                            <option value="Social" selected>Social 🎉</option>
-                            <option value="Nature">Nature 🌿</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Energy Level</label>
-                        <select id="energySelect">
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Very High">Very High</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="btn" style="width: auto; float: right;" onclick="nextStep(2)">Next Screen</button>
-            </div>
-
-            <div class="quiz-step" id="step2">
-                <div class="grid-2x2">
-                    <div>
-                        <label>Group Size</label>
-                        <input type="number" id="groupSizeInput" value="1" min="1">
-                    </div>
-                    <div>
-                        <label>Who Are You With?</label>
-                        <select id="companionshipSelect">
-                            <option value="Solo">Solo</option>
-                            <option value="Partner">Date / Partner</option>
-                            <option value="Friends">Friends Group</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
-                    <button class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 8px" onclick="nextStep(1)">Back</button>
-                    <button class="btn" style="width: auto; margin-top: 0;" onclick="nextStep(3)">Next Screen</button>
-                </div>
-            </div>
-
-            <div class="quiz-step" id="step3">
-                <div class="grid-2x2">
-                    <div>
-                        <label>Available Time (Mins)</label>
-                        <input type="number" id="timeInput" value="120" step="30">
-                    </div>
-                    <div>
-                        <label>Budget Limit ($)</label>
-                        <input type="number" id="budgetInput" value="50" step="10">
-                    </div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
-                    <button class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 8px" onclick="nextStep(2)">Back</button>
-                    <button class="btn" style="width: auto; margin-top: 0;" onclick="generateRecs()">Generate Matches</button>
-                </div>
-            </div>
-        </section>
-
-        <h2 class="deck-title" id="deckHeader">Top Recommendations</h2>
-        <div class="recommendations-deck" id="recsDeck">
-            <p style="color: var(--text-muted)">Fill out the questionnaire above or use Quick Search to see real runtime recommendation paths.</p>
-        </div>
-
-    </div>
-
-    <script>
-        // Mock Location-Based Places Database Core
-        const database = [
-            { name: "Enigma Escape Rooms", category: "Escape Room", mood: "Adventure", energy: "Very High", maxGroup: 10, budget: 35, dist: "1.2 km", rating: "4.9", mapUrl: "https://maps.google.com" },
-            { name: "Strike & Spare Bowling", category: "Bowling Alley", mood: "Social", energy: "Very High", maxGroup: 12, budget: 15, dist: "2.4 km", rating: "4.6", mapUrl: "https://maps.google.com" },
-            { name: "The Daily Grind Café", category: "Coffee Shop", mood: "Relaxing", energy: "Low", maxGroup: 3, budget: 8, dist: "0.4 km", rating: "4.5", mapUrl: "https://maps.google.com" },
-            { name: "Apex Go-Kart Racing", category: "Sports Venue", mood: "Adventure", energy: "Very High", maxGroup: 8, budget: 45, dist: "4.8 km", rating: "4.8", mapUrl: "https://maps.google.com" },
-            { name: "Metropolitan Museum of Art", category: "Museum", mood: "Creative", energy: "Medium", maxGroup: 6, budget: 20, dist: "3.1 km", rating: "4.7", mapUrl: "https://maps.google.com" },
-            { name: "Hidden Valley Trail", category: "Hiking Trail", mood: "Nature", energy: "Very High", maxGroup: 15, budget: 0, dist: "5.0 km", rating: "4.9", mapUrl: "https://maps.google.com" }
-        ];
-
-        let freeSessions = 3;
-        let activePlan = "Free";
-
-        function nextStep(stepNum) {
-            document.querySelectorAll('.quiz-step').forEach(step => step.classList.remove('active'));
-            document.getElementById(`step${stepNum}`).classList.add('active');
-        }
-
-        function setPlan(planName) {
-            activePlan = planName;
-            alert(`Switched engine routing context to: ${planName}`);
-        }
-
-        function closePricing() {
-            alert("Running with Remaining Free Dynamic Tokens");
-        }
-
-        // Real-Time Dynamic Mood Palette Engine Integration
-        function applyDynamicTheme(mood) {
-            const themes = {
-                "Adventure": "linear-gradient(135deg, #0f172a 0%, #7c2d12 100%)",
-                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
-                "Creative": "linear-gradient(135deg, #0f172a 0%, #581c87 100%)",
-                "Social": "linear-gradient(135deg, #0f172a 0%, #713f12 100%)",
-                "Nature": "linear-gradient(135deg, #0f172a 0%, #064e3b 100%)"
-            };
-            document.body.style.background = themes[mood] || "#0f172a";
-        }
-
-        function generateRecs() {
-            if (activePlan === "Free" && freeSessions <= 0) {
-                alert("Please purchase tokens or subscribe to standard tiers.");
-                return;
-            }
-            if (activePlan === "Free") {
-                freeSessions--;
-                document.getElementById('trialStatus').innerText = `${freeSessions} of 3 free recommendation sessions remaining.`;
-            }
-
-            const selectedMood = document.getElementById('moodSelect').value;
-            applyDynamicTheme(selectedMood);
-
-            const filtered = database.filter(item => item.mood === selectedMood);
-            renderDeck(filtered);
-        }
-
-        function executeQuickSearch(event) {
-            if (event.key === "Enter" || event.keyCode === 13) {
-                const query = document.getElementById('quickSearchInput').value.toLowerCase();
-                const filtered = database.filter(item => 
-                    item.name.toLowerCase().includes(query) || 
-                    item.category.toLowerCase().includes(query)
-                );
-                document.getElementById('deckHeader').innerText = `Quick Search Matches for "${query}"`;
-                renderDeck(filtered);
-            }
-        }
-
-        function renderDeck(matches) {
-            const container = document.getElementById('recsDeck');
-            container.innerHTML = "";
-
-            if (matches.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-muted)">No operational matches found in near geo-fence constraints.</p>`;
-                return;
-            }
-
-            matches.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "rec-card";
-                card.innerHTML = `
-                    <div class="meta-group">
-                        <span class="rating-pill">★ ${item.rating}</span>
-                        <h3 style="margin-top: 0.4rem">${item.name}</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem">${item.category} • ${item.dist} away • Est: $${item.budget}</p>
-                    </div>
-                    <div class="action-cluster">
-                        <button class="btn-secondary">Save</button>
-                        <a href="${item.mapUrl}" target="_blank" class="btn-nav">Get Me There →</a>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-    </script>
-</body>
-</html>
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
