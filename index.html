@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UpNext — Your Smart Activity Assistant</title>
+    <title>UpNext — Ultra Premium Colorful Smart Assistant</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #2e1065 100%);
-            --card-bg: rgba(30, 41, 59, 0.85);
-            --accent: #6366f1;
+            /* Vibrant, colorful background gradient spectrums */
+            --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 35%, #831843 70%, #0f172a 100%);
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --accent: #ec4899;
+            --accent-glow: rgba(236, 72, 153, 0.4);
             --text-main: #ffffff;
-            --text-muted: #cbd5e1;
-            --success: #16a34a;
+            --text-muted: #e2e8f0;
+            --success: #10b981;
             --danger: #ef4444;
+            --gold: #facc15;
+            --neon-blue: #06b6d4;
         }
 
         * {
@@ -36,9 +40,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(16px);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -48,9 +52,45 @@
             font-size: 2.2rem;
             font-weight: 900;
             cursor: pointer;
-            background: linear-gradient(to right, #818cf8, #c084fc);
+            background: linear-gradient(to right, #ff007f, #7000ff, #00f0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .streak-badge {
+            background: linear-gradient(45deg, #ff5e36, #f13c73);
+            color: #fff;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(241, 60, 115, 0.3);
+        }
+
+        .premium-btn {
+            background: linear-gradient(45deg, #facc15, #ff8000);
+            color: #0f172a;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(250, 204, 21, 0.4);
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .premium-btn:hover { 
+            transform: scale(1.05);
+            filter: brightness(1.1);
         }
 
         .container {
@@ -72,17 +112,44 @@
             padding: 6rem 4rem;
             background: var(--card-bg);
             border-radius: 32px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
             text-align: center;
             margin-bottom: 3rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
         }
 
         .welcome-hero h1 {
-            font-size: 4.2rem;
+            font-size: 4.5rem;
             margin-bottom: 1.5rem;
             letter-spacing: -0.04em;
-            font-weight: 800;
+            font-weight: 900;
+            background: linear-gradient(to right, #ffffff, #f472b6, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-pill {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1.75rem;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-indicator {
+            width: 14px;
+            height: 14px;
+            background: var(--danger);
+            border-radius: 50%;
+        }
+        .status-indicator.connected {
+            background: #00ffcc;
+            box-shadow: 0 0 12px #00ffcc;
         }
 
         .dashboard-grid {
@@ -95,18 +162,21 @@
             background: var(--card-bg);
             border-radius: 24px;
             padding: 2.5rem;
-            border: 2px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
         }
 
         .panel-box h2 {
-            font-size: 2.4rem;
+            font-size: 2.6rem;
             margin-bottom: 1.5rem;
+            color: #f472b6;
         }
 
         .panel-box h3 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 1rem;
+            color: #38bdf8;
         }
 
         .step-group {
@@ -132,22 +202,24 @@
 
         label {
             font-size: 1.1rem;
-            color: var(--text-muted);
+            color: #f472b6;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             font-weight: bold;
         }
 
-        select {
-            padding: 1.2rem;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
+        select, .btn-sync {
+            padding: 1.3rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
             color: white;
             font-size: 1.2rem;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
             width: 100%;
+            text-align: left;
+            cursor: pointer;
         }
 
         select option {
@@ -157,17 +229,30 @@
 
         select:focus {
             border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .btn-sync {
+            font-weight: bold;
+            background: linear-gradient(90deg, rgba(6, 182, 212, 0.2), rgba(14, 165, 233, 0.2));
+            border-color: var(--neon-blue);
+            text-align: center;
+        }
+        .btn-sync:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
 
         .btn {
-            background: var(--accent);
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
             color: white;
             border: none;
-            padding: 1.2rem 2.5rem;
-            border-radius: 12px;
+            padding: 1.3rem 2.8rem;
+            border-radius: 14px;
             font-size: 1.3rem;
             font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 4px 15px var(--accent-glow);
             transition: transform 0.1s, opacity 0.2s;
         }
 
@@ -176,10 +261,11 @@
 
         .btn-large {
             font-size: 1.8rem;
-            padding: 1.5rem 5rem;
+            padding: 1.6rem 5.5rem;
             border-radius: 50px;
             margin-top: 2rem;
-            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.5);
         }
 
         .btn-nav-group {
@@ -199,27 +285,39 @@
             background: var(--card-bg);
             border-radius: 24px;
             padding: 2.5rem;
-            border: 2px solid rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.12);
             display: flex;
             justify-content: space-between;
             align-items: center;
             backdrop-filter: blur(8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
 
         .rec-card h3 {
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             margin: 0.5rem 0;
+            color: #fff;
         }
 
         .ai-badge {
-            background: rgba(99, 102, 241, 0.25);
-            color: #a5b4fc;
+            background: rgba(6, 182, 212, 0.2);
+            color: #a5f3fc;
             padding: 0.4rem 1rem;
             border-radius: 8px;
             font-size: 1.1rem;
             font-weight: bold;
-            border: 1px solid rgba(99, 102, 241, 0.4);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+        }
+
+        .weather-badge {
+            background: rgba(234, 179, 8, 0.2);
+            color: #fef08a;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 1px solid rgba(234, 179, 8, 0.4);
+            margin-left: 0.5rem;
         }
 
         .card-actions {
@@ -237,12 +335,8 @@
             font-size: 1.2rem;
             display: inline-flex;
             align-items: center;
-            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
-            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
-
-        .btn-maps:hover { background-color: #15803d; }
-        .btn-maps:active { transform: scale(0.98); }
 
         .btn-sec {
             background: rgba(255, 255, 255, 0.12);
@@ -254,43 +348,77 @@
             font-weight: 600;
             cursor: pointer;
         }
-
         .btn-sec:hover { background: rgba(255, 255, 255, 0.2); }
 
         .btn-dislike {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
             border: 2px solid rgba(239, 68, 68, 0.4);
             padding: 1.2rem 1.8rem;
             border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+        }
+        .btn-dislike:hover { background: rgba(239, 68, 68, 0.3); }
+
+        /* PREMIUM PAYWALL MODAL OVERLAY */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(25px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .btn-dislike:hover {
-            background: rgba(239, 68, 68, 0.4);
-            color: #fff;
+        .modal-overlay.active-modal {
+            opacity: 1;
+            pointer-events: auto;
         }
 
-        .favorite-anchor {
-            display: block;
-            color: #818cf8;
-            text-decoration: none;
-            padding: 0.6rem;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.2s;
+        .paywall-box {
+            background: linear-gradient(145deg, #1e1b4b, #311042);
+            border: 3px solid var(--gold);
+            border-radius: 32px;
+            padding: 4rem;
+            max-width: 700px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
         }
-        .favorite-anchor:hover {
-            background: rgba(99, 102, 241, 0.2);
-            color: white;
+
+        .pay-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .pay-card {
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 2.5rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pay-card:hover {
+            border-color: var(--gold);
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-5px);
         }
 
         @media(max-width: 1024px) {
-            .form-grid, .dashboard-grid { grid-template-columns: 1fr; }
+            .form-grid, .dashboard-grid, .pay-options-grid { grid-template-columns: 1fr; }
             .rec-card { flex-direction: column; align-items: flex-start; gap: 2rem; }
             .card-actions { width: 100%; justify-content: flex-end; }
         }
@@ -300,30 +428,39 @@
 
     <header>
         <div class="logo" onclick="resetToHome()">UpNext</div>
-        <div style="font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">Adaptive AI Engine</div>
+        <div class="header-controls">
+            <div class="streak-badge" id="streakDisplay">🔥 <span id="streakCount">1</span> Day Streak</div>
+            <button class="premium-btn" onclick="triggerPaywall(true, 'Configure premium membership models below.')">✨ Premium Upgrade</button>
+        </div>
     </header>
 
     <div class="container">
 
         <section id="homeView" class="view-section active-view">
             <div class="welcome-hero">
+                <div class="status-pill">
+                    <div id="statusDot" class="status-indicator"></div>
+                    <span id="statusText">Environmental Channels Offline</span>
+                </div>
                 <h1>Stop Scrolling. Start Exploring.</h1>
-                <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.6; font-size: 1.4rem;">
-                    UpNext eliminates endless decision paralysis. Powered by a local heuristic AI model that learns from your preferences automatically.
+                <p style="color: var(--text-muted); max-width: 850px; margin: 0 auto; line-height: 1.7; font-size: 1.5rem; margin-bottom: 2rem;">
+                    Eliminate decision paralysis. UpNext tracks real-time location parameters and local weather indices to generate ultra-customized recommendations instantly.
                 </p>
-                <button class="btn btn-large" onclick="showView('questionnaireView')">Start Questionnaire</button>
+                <div id="trialNotification" style="color: var(--gold); font-weight: 800; font-size: 1.4rem; margin-bottom: 1.5rem; text-shadow: 0 0 10px rgba(250,204,21,0.2);">
+                    Free Trial Status: 3 of 3 Generations Left
+                </div>
+                <button class="btn btn-large" onclick="handleStartIntake()">Launch Matrix Intake</button>
             </div>
 
             <div class="dashboard-grid">
                 <div class="panel-box">
-                    <h3>Saved & Scheduled Plans</h3>
-                    <p style="color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem;" id="calendarStatus">No upcoming bookings. Generate choices and schedule plans to populate your agenda.</p>
-                    <div id="calendarList" style="margin-top: 1.5rem;"></div>
+                    <h3>Saved Scheduling Matrix</h3>
+                    <p style="color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem;">Generate active recommendations to pin plans into your upcoming agenda.</p>
                 </div>
                 <div class="panel-box">
-                    <h3>Favorites Hub ❤️ (Click to Map)</h3>
+                    <h3>Your Favorites Lockbox Hub ❤️</h3>
                     <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 1.2rem; display: flex; flex-direction: column; gap: 0.75rem;">
-                        <li>No bookmarks saved into your favorite locker yet.</li>
+                        <li>No items locked into your favorites registry yet.</li>
                     </ul>
                 </div>
             </div>
@@ -335,7 +472,7 @@
                 <h2>Activity Diagnostics Intake</h2>
                  
                 <div id="qStep1" class="step-group active-step">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 1 of 4: Vibe Alignment</p>
+                    <p style="color: #38bdf8; margin-bottom: 1rem; font-size: 1.3rem; font-weight: bold;">Screen 1 of 4: Vibe Alignment Matrix</p>
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Desired Mood Focus</label>
@@ -363,23 +500,23 @@
                 </div>
 
                 <div id="qStep2" class="step-group">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 2 of 4: Structural Scale</p>
+                    <p style="color: #38bdf8; margin-bottom: 1rem; font-size: 1.3rem; font-weight: bold;">Screen 2 of 4: Structural Scope</p>
                     <div class="form-grid">
                         <div class="form-item">
-                            <label>Headcount / Group Size</label>
+                            <label>Headcount Parameters</label>
                             <select id="inputGroupSize">
-                                <option value="Solo">Solo</option>
-                                <option value="Small">2-4 People</option>
-                                <option value="Large" selected>5+ People</option>
+                                <option value="Solo">Solo Explorer</option>
+                                <option value="Small">2-4 People Pool</option>
+                                <option value="Large" selected>5+ Large Assembly</option>
                             </select>
                         </div>
                         <div class="form-item">
-                            <label>Who Are You With?</label>
+                            <label>Companion Network Type</label>
                             <select id="inputWith">
                                 <option value="Solo">Solo</option>
-                                <option value="Partner">Date</option>
-                                <option value="Friends">Friends</option>
-                                <option value="Family" selected>Family</option>
+                                <option value="Partner">Date Partnership</option>
+                                <option value="Friends">Friend Network</option>
+                                <option value="Family" selected>Family Circle</option>
                             </select>
                         </div>
                     </div>
@@ -387,20 +524,20 @@
                 </div>
 
                 <div id="qStep3" class="step-group">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 3 of 4: Logistics Filters</p>
+                    <p style="color: #38bdf8; margin-bottom: 1rem; font-size: 1.3rem; font-weight: bold;">Screen 3 of 4: Logistic Thresholds</p>
                     <div class="form-grid">
                         <div class="form-item">
-                            <label>Available Time Allotment</label>
+                            <label>Allotted Availability Timeframe</label>
                             <select id="inputTime">
-                                <option value="Short">Short (&lt; 1.5 hrs)</option>
-                                <option value="Long" selected>Long (2+ hrs)</option>
+                                <option value="Short">Shorter Spans (< 1.5 Hours)</option>
+                                <option value="Long" selected>Extended Windows (2+ Hours)</option>
                             </select>
                         </div>
                         <div class="form-item">
-                            <label>Maximum Budget Cap</label>
+                            <label>Budget Allocation Target</label>
                             <select id="inputBudget">
-                                <option value="Free">Free</option>
-                                <option value="Paid" selected>Paid</option>
+                                <option value="Free">Complementary / Free</option>
+                                <option value="Paid" selected>Standard Premium Paid</option>
                             </select>
                         </div>
                     </div>
@@ -408,24 +545,23 @@
                 </div>
 
                 <div id="qStep4" class="step-group">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 4 of 4: Spatial Boundaries</p>
+                    <p style="color: #38bdf8; margin-bottom: 1rem; font-size: 1.3rem; font-weight: bold;">Screen 4 of 4: Environment & Hardware Synchronization</p>
                     <div class="form-grid">
                         <div class="form-item">
-                            <label>Environment Setting Preference</label>
-                            <select id="inputSetting">
-                                <option value="Indoor" selected>Indoor</option>
-                                <option value="Outdoor">Outdoor</option>
-                            </select>
+                            <label>Telemetry Framework Sync</label>
+                            <button class="btn-sync" id="locationSyncBtn" onclick="requestEnvironmentalLink()">
+                                📍 Link Hardware Weather & Location Channels
+                            </button>
                         </div>
                         <div class="form-item">
-                            <label>Maximum Displacement Radius</label>
-                            <select id="inputRadius">
-                                <option value="0">0 km (At Home)</option>
-                                <option value="Local" selected>Out and About</option>
+                            <label>Structural Base Setting</label>
+                            <select id="inputSetting">
+                                <option value="Indoor" selected>Indoor Shells</option>
+                                <option value="Outdoor">Outdoor Fields</option>
                             </select>
                         </div>
                     </div>
-                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Generate Recommendations</button></div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Run Intelligent Scoring Matrix</button></div>
                 </div>
 
             </div>
@@ -433,44 +569,151 @@
 
 
         <section id="resultsView" class="view-section">
-            <h2 id="resultsHeader" style="font-size: 2.8rem; margin-bottom: 1.5rem;">AI Optimized Recommendation Matrix</h2>
+            <h2 id="resultsHeader" style="font-size: 2.8rem; margin-bottom: 1.5rem; text-align: center;">AI Optimized Match Output Matrix</h2>
             <div id="outputDeck" class="recs-deck"></div>
         </section>
 
     </div>
 
+
+    <div id="paywallOverlay" class="modal-overlay">
+        <div class="paywall-box">
+            <h2 style="font-size: 3.2rem; color: var(--gold); margin-bottom: 1rem; font-weight: 900;">✨ Premium Gate Triggered</h2>
+            <p id="paywallReason" style="font-size: 1.3rem; color: var(--text-muted); line-height: 1.6;">
+                Your 3-day complimentary calculation operations have concluded. Upgrade your clearance tier below to bypass execution boundaries.
+            </p>
+            
+            <div class="pay-options-grid">
+                <div class="pay-card" onclick="purchaseAccess('monthly')">
+                    <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem;">Monthly Unlimited</h3>
+                    <p style="font-size: 2.2rem; color: #ff007f; font-weight: 900; margin: 1rem 0;">€4.99 / mo</p>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.4;">Unlimited evaluations, premium colorful updates, and active device sensor mapping.</p>
+                </div>
+                <div class="pay-card" onclick="purchaseAccess('metered')">
+                    <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem;">Single Token Entry</h3>
+                    <p style="font-size: 2.2rem; color: var(--neon-blue); font-weight: 900; margin: 1rem 0;">€0.99 / run</p>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.4;">Acquire access clearance single usage tokens. Perfect for occasional excursions.</p>
+                </div>
+            </div>
+            <button class="btn-sec" style="border-color: rgba(255,255,255,0.3);" onclick="triggerPaywall(false)">Minimize Controller</button>
+        </div>
+    </div>
+
+
     <script>
+        // CLIENT ENVIRONMENT MEMORY CONTEXT
         let savedFavorites = [];
         let blacklistedItems = [];
-        let penalizedCategories = {}; // AI memory object tracking disliked categories
+        let penalizedCategories = {};
+        
+        let freeTrialRunsRemaining = 3;
+        let userIsSubscribed = false;
+        let currentStreakCount = 1;
+        
+        let appLocationConnected = false;
+        let mockTemperatureCelsius = 18; 
+        let mockCondition = "Clear Sky";
 
-        // BROAD DATAPOOL PACKED WITH META-TAGS FOR SIMULATING MACHINE LEARNING WEIGHTS
-        const deepActivityPool = [
-            {name: "Classic Family Board & Card Game Night", cat: "Gaming", env: "Indoor", energy: "Medium", size: "Large", budget: "Free", desc: "Gather everyone around for intense structural tabletop rounds."},
-            {name: "Interactive Living Room Trivia Contest", cat: "Gaming", env: "Indoor", energy: "High", size: "Large", budget: "Free", desc: "Host a fast-paced custom trivia game using smartphone setups."},
-            {name: "Family Baking Blueprint Challenge", cat: "Culinary", env: "Indoor", energy: "Medium", size: "Large", budget: "Paid", desc: "Pick a challenging pastry recipe from scratch and bake it as a unit."},
-            {name: "Cozy Living Room Movie Marathon", cat: "Media", env: "Indoor", energy: "Low", size: "Large", budget: "Free", desc: "Line up classic film chapters with specialty popcorn layers."},
-            {name: "DIY Painting & Masterpiece Workshop", cat: "Art", env: "Indoor", energy: "Low", size: "Large", budget: "Paid", desc: "Get canvases out and challenge everyone to paint a shared landscape."},
-            {name: "Indoor Obstacle Course Challenge", cat: "Active", env: "Indoor", energy: "High", size: "Large", budget: "Free", desc: "Build a funny step course across floor markers and pillows safely."},
-            {name: "Family Heritage Story Sharing Session", cat: "Social", env: "Indoor", energy: "Low", size: "Large", budget: "Free", desc: "Bring print albums out and discuss old memories and family histories."},
-            {name: "Improv Acting & Charades Tourney", cat: "Social", env: "Indoor", energy: "High", size: "Large", budget: "Free", desc: "Act out funny prompts against a strict kitchen timer countdown."},
-            {name: "Acoustic Singalong & Vinyl Listening", cat: "Media", env: "Indoor", energy: "Low", size: "Large", budget: "Free", desc: "Play deep cut classic tracks on the turntable and rate the lyrics."},
-            {name: "Stop-Motion Clay Animation Project", cat: "Art", env: "Indoor", energy: "Medium", size: "Large", budget: "Paid", desc: "Construct figures and animate a 10-second smartphone cinematic masterpiece."},
-            {name: "Rock Climbing Facility Tour", cat: "Active", env: "Indoor", energy: "High", size: "Small", budget: "Paid", desc: "Test structural climbing holds on a high-grade indoor bouldering facility."},
-            {name: "Scenic Kayaking Excursion", cat: "Active", env: "Outdoor", energy: "High", size: "Small", budget: "Paid", desc: "Rent heavy tandem row equipment and tackle nearby active water routes."},
-            {name: "Cozy Specialty Coffee Shop Escape", cat: "Culinary", env: "Indoor", energy: "Low", size: "Solo", budget: "Paid", desc: "Discover a premium roasting room to try complex artisan cold brews."},
-            {name: "Day Spa and Wellness Retreat", cat: "Relaxation", env: "Indoor", energy: "Low", size: "Solo", budget: "Paid", desc: "Unplug completely with thermal pool access and deep muscle massages."},
-            {name: "Local Museum & Exhibition Crawl", cat: "Art", env: "Indoor", energy: "Low", size: "Small", budget: "Paid", desc: "Browse artistic landmarks and deep historical regional artifacts."},
-            {name: "Beginner's Artisan Pottery Class", cat: "Art", env: "Indoor", energy: "Medium", size: "Small", budget: "Paid", desc: "Throw wet clay onto spin wheels to construct unique custom mugs."},
-            {name: "Bustling Local Bowling Alley Alley", cat: "Gaming", env: "Indoor", energy: "Medium", size: "Large", budget: "Paid", desc: "Lace up classic bowling shoes and aim for high strikes down slick lanes."},
-            {name: "Group Escape Room Experience", cat: "Gaming", env: "Indoor", energy: "High", size: "Small", budget: "Paid", desc: "Solve mechanical cipher modules hidden behind walls before time ends."},
-            {name: "Scenic Hiking & Nature Trails", cat: "Active", env: "Outdoor", energy: "High", size: "Small", budget: "Free", desc: "Scale local high vantage points along heavily wooded dirt paths."},
-            {name: "Regional Botanical Garden Tour", cat: "Relaxation", env: "Outdoor", energy: "Low", size: "Small", budget: "Paid", desc: "Walk down climate-controlled glass domes containing rare tropical vegetation."},
-            {name: "Retro Arcade Token Tournament", cat: "Gaming", env: "Indoor", energy: "High", size: "Small", budget: "Paid", desc: "Compete across classic pinball tables and legendary fighting game rigs."},
-            {name: "Laser Tag Neon Battleground", cat: "Active", env: "Indoor", energy: "High", size: "Large", budget: "Paid", desc: "Gear up with infrared vests and out-maneuver teams in foggy neon arenas."},
-            {name: "Street Food Truck Crawl", cat: "Culinary", env: "Outdoor", energy: "Medium", size: "Small", budget: "Paid", desc: "Tour the highest-rated local open-air culinary pop-ups around town."},
-            {name: "Local Library Research Deep-Dive", cat: "Social", env: "Indoor", energy: "Low", size: "Solo", budget: "Free", desc: "Unearth vintage blueprints, town journals, and historical microfiche archives."}
+        // EXPANDED SCORING MATRIX TARGET DATASET
+        const globalKnowledgeBase = [
+            {name: "Outdoor Municipal Resort Swimming Pool", cat: "Active", env: "Outdoor", tempNeed: "Hot", desc: "Beat high outdoor heat waves with an expansive public splash and swimming session."},
+            {name: "Open Air Glacial Italian Gelato Crawl", cat: "Culinary", env: "Outdoor", tempNeed: "Hot", desc: "Tour the highest-rated local open-air cold confectionery pop-ups across town."},
+            {name: "Indoor Sub-Zero Ice Skating Arena", cat: "Active", env: "Indoor", tempNeed: "Hot", desc: "Escape sun rays entirely within a heavily cooled indoor winter sport facility."},
+            {name: "Classic Family Board & Card Game Tournament", cat: "Gaming", env: "Indoor", tempNeed: "Any", desc: "Gather your group around for intense structural tabletop card and board rounds inside."},
+            {name: "Interactive Living Room Digital Trivia Contest", cat: "Gaming", env: "Indoor", tempNeed: "Any", desc: "Host a fast-paced custom trivia game using smartphone configurations and smart buzzers."},
+            {name: "Family Baking Blueprint Masterclass Challenge", cat: "Culinary", env: "Indoor", tempNeed: "Any", desc: "Select a challenging pastry recipe from scratch and complete production as a team."},
+            {name: "Cozy Living Room Cinematic Movie Marathon", cat: "Media", env: "Indoor", tempNeed: "Any", desc: "Line up classic movie streaming chapters coupled with signature specialty snack bowls."},
+            {name: "Indoor Cushion Obstacle Course Challenge", cat: "Active", env: "Indoor", tempNeed: "Any", desc: "Construct a funny step course across floor markers and lounge assets safely inside."},
+            {name: "High-Grade Rock Climbing Wall Hub Tour", cat: "Active", env: "Indoor", tempNeed: "Any", desc: "Test structural climbing holds on a premium, weather-sheltered indoor bouldering grid."},
+            {name: "Scenic Tandem Kayaking Waterways Route", cat: "Active", env: "Outdoor", tempNeed: "Mild", desc: "Rent heavy tandem row equipment and tackle nearby active outdoor water channels."},
+            {name: "Cozy Specialty Micro Coffee Roasters Escape", cat: "Culinary", env: "Indoor", tempNeed: "Cold", desc: "Shield yourself from cold exterior weather parameters inside a premium heating artisan cafe."},
+            {name: "Day Spa and Thermal Hot Spring Pools Escape", cat: "Relaxation", env: "Indoor", tempNeed: "Cold", desc: "Warm up deeply with heavy temperature thermal mineral baths and deep massage routines."},
+            {name: "Local Fine Arts Museum & Exhibition Crawl", cat: "Art", env: "Indoor", tempNeed: "Any", desc: "Browse artistic landmarks, structural monuments, and historical artifact archives safely indoors."},
+            {name: "Mechanical Escape Room Cipher Crypt", cat: "Gaming", env: "Indoor", tempNeed: "Any", desc: "Solve mechanical lock sets and logic puzzles hidden behind walls before time loops finish."},
+            {name: "Scenic High Vantage Alpine Hiking Excursion", cat: "Active", env: "Outdoor", tempNeed: "Mild", desc: "Scale local high vantage wilderness coordinates along clean timber dirt trails."}
         ];
+
+        // ENGINE RUN INITIALIZATION
+        window.onload = function() {
+            evaluateStreakTelemetry();
+            updateTrialDisplay();
+            applyVibrantThemePalette("Default");
+        };
+
+        function evaluateStreakTelemetry() {
+            let lastVisit = localStorage.getItem('upnext_last_visit');
+            let todayStr = new Date().toDateString();
+            let savedStreak = localStorage.getItem('upnext_streak_count') || 1;
+
+            if (lastVisit) {
+                let yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (lastVisit === yesterday.toDateString()) {
+                    currentStreakCount = parseInt(savedStreak) + 1;
+                } else if (lastVisit !== todayStr) {
+                    currentStreakCount = 1; 
+                } else {
+                    currentStreakCount = parseInt(savedStreak);
+                }
+            }
+            localStorage.setItem('upnext_last_visit', todayStr);
+            localStorage.setItem('upnext_streak_count', currentStreakCount);
+            document.getElementById('streakCount').innerText = currentStreakCount;
+        }
+
+        function updateTrialDisplay() {
+            const notice = document.getElementById('trialNotification');
+            if (userIsSubscribed) {
+                notice.innerText = "✨ Premium Status Confirmed (Unlimited Calculation Layers)";
+                notice.style.color = "#00ffcc";
+            } else {
+                notice.innerText = `Free Trial Balance: ${freeTrialRunsRemaining} of 3 System Operations Remaining`;
+                notice.style.color = "var(--gold)";
+            }
+        }
+
+        function triggerPaywall(show, forceMessage = "") {
+            const modal = document.getElementById('paywallOverlay');
+            if(forceMessage) {
+                document.getElementById('paywallReason').innerText = forceMessage;
+            }
+            if (show) modal.classList.add('active-modal');
+            else modal.classList.remove('active-modal');
+        }
+
+        function purchaseAccess(mode) {
+            userIsSubscribed = true;
+            triggerPaywall(false);
+            updateTrialDisplay();
+            alert(`Simulation verified! Tier type converted to: ${mode === 'monthly' ? 'Unlimited Premium Monthly Pass (€4.99/mo)' : 'Single Match Execution Token (€0.99/run)'}.`);
+        }
+
+        function handleStartIntake() {
+            if (freeTrialRunsRemaining <= 0 && !userIsSubscribed) {
+                triggerPaywall(true, "Your 3 free trial configurations have been spent. Select a choice below to proceed into calculations.");
+                return;
+            }
+            showView('questionnaireView');
+        }
+
+        // DEVICE TELEMETRY LINK SIMULATION
+        function requestEnvironmentalLink() {
+            const btn = document.getElementById('locationSyncBtn');
+            btn.innerText = "📡 Contacting Local Cellular Weather Nodes...";
+            
+            setTimeout(() => {
+                appLocationConnected = true;
+                mockTemperatureCelsius = 33; // Simulated hot sun condition matching pool conditions
+                mockCondition = "Extreme Heatwave Warning";
+                
+                document.getElementById('statusDot').className = "status-indicator connected";
+                document.getElementById('statusText').innerText = `Sync Active: Lisbon Area (${mockTemperatureCelsius}°C, ${mockCondition})`;
+                
+                btn.style.borderColor = "#00ffcc";
+                btn.style.background = "rgba(0, 255, 204, 0.15)";
+                btn.innerText = `✅ Integrated Environment Data: ${mockTemperatureCelsius}°C & Sunny`;
+            }, 1200);
+        }
 
         function showView(viewId) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
@@ -478,84 +721,94 @@
         }
 
         function resetToHome() {
-            document.body.style.background = "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #2e1065 100%)";
+            applyVibrantThemePalette("Default");
             showView('homeView');
         }
 
         function goToStep(stepNum) {
             document.querySelectorAll('.step-group').forEach(s => s.classList.remove('active-step'));
-            document.getElementById(`qStep${stepNum}`).classList.add('active-step');
+            document.getElementById(`qStep${stepNum}`).className = "step-group active-step";
         }
 
-        function mutateThemeWorkspace(mood) {
-            const palettes = {
-                "Adventure": "linear-gradient(135deg, #111827 0%, #ea580c 100%)",
-                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #2563eb 100%)",
-                "Creative": "linear-gradient(135deg, #111827 0%, #7c3aed 100%)",
-                "Social": "linear-gradient(135deg, #0f172a 0%, #d97706 100%)",
-                "Nature": "linear-gradient(135deg, #0b0f19 0%, #059669 100%)",
-                "Romantic": "linear-gradient(135deg, #111827 0%, #db2777 100%)",
-                "Productive": "linear-gradient(135deg, #0f172a 0%, #0d9488 100%)",
-                "Nightlife": "linear-gradient(135deg, #090514 0%, #4c1d95 100%)"
+        function applyVibrantThemePalette(mood) {
+            const colorfulPalettes = {
+                "Adventure": "linear-gradient(135deg, #11052c 0%, #f43f5e 50%, #fb923c 100%)",
+                "Relaxing": "linear-gradient(135deg, #020617 0%, #3b82f6 50%, #06b6d4 100%)",
+                "Creative": "linear-gradient(135deg, #0f051d 0%, #a855f7 50%, #ec4899 100%)",
+                "Social": "linear-gradient(135deg, #1e1b4b 0%, #ec4899 50%, #f43f5e 100%)",
+                "Nature": "linear-gradient(135deg, #022c22 0%, #10b981 60%, #84cc16 100%)",
+                "Romantic": "linear-gradient(135deg, #2a0815 0%, #db2777 50%, #fda4af 100%)",
+                "Productive": "linear-gradient(135deg, #032b30 0%, #0ea5e9 60%, #22c55e 100%)",
+                "Nightlife": "linear-gradient(135deg, #050515 0%, #2e1065 50%, #701a75 100%)",
+                "Default": "linear-gradient(135deg, #1e1b4b 0%, #4c1d95 35%, #831843 70%, #0f172a 100%)"
             };
-            document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%)";
+            document.body.style.background = colorfulPalettes[mood] || colorfulPalettes["Default"];
         }
 
-        // SMART HEURISTIC RECOMMENDATION HEAVY ENGINE RUNNER
+        // ADAPTIVE MODEL MATCH RUNNER
         function processEngineRun() {
+            if (freeTrialRunsRemaining <= 0 && !userIsSubscribed) {
+                triggerPaywall(true, "Your free trial calculation allowances have wrapped up. Opt into a pricing solution path.");
+                return;
+            }
+
+            if (!userIsSubscribed) {
+                freeTrialRunsRemaining--;
+                updateTrialDisplay();
+            }
+
             const mood = document.getElementById('inputMood').value;
             const energy = document.getElementById('inputEnergy').value;
-            const size = document.getElementById('inputGroupSize').value;
-            const budget = document.getElementById('inputBudget').value;
             const setting = document.getElementById('inputSetting').value;
-            const radius = document.getElementById('inputRadius').value;
 
-            mutateThemeWorkspace(mood);
+            applyVibrantThemePalette(mood);
 
-            // AI SCORING LOOP MATCH MECHANISM
-            let scoredItems = deepActivityPool.map(item => {
-                let score = 100; // Base baseline score probability anchor
+            let scoredItems = globalKnowledgeBase.map(item => {
+                let score = 100;
 
-                // Filter 1: Hard removal of completely blocked explicit items
                 if (blacklistedItems.includes(item.name)) return { item, score: -9999 };
 
-                // Heuristic weight adjusters:
-                if (item.env === setting) score += 30;
-                if (item.energy === energy) score += 25;
-                if (item.size === size) score += 20;
-                if (item.budget === budget) score += 15;
-                if (radius === "0" && item.env !== "Indoor") score -= 50;
+                // Hardware-linked environmental matching override logic
+                if (appLocationConnected) {
+                    if (mockTemperatureCelsius >= 30 && item.tempNeed === "Hot") score += 120; // Pool and cold items receive peak placement weights
+                    if (mockTemperatureCelsius < 15 && item.tempNeed === "Cold") score += 90;
+                    if (mockTemperatureCelsius >= 15 && mockTemperatureCelsius < 25 && item.tempNeed === "Mild") score += 70;
+                }
 
-                // MACHINE LEARNING WEIGHT PENALTY: Knocks down total likelihood score if group profile matches a previous negative event
+                if (item.env === setting) score += 25;
+                if (item.energy === energy) score += 15;
+
+                // Neural-inspired categorical learning subtraction nodes
                 if (penalizedCategories[item.cat]) {
-                    score -= (penalizedCategories[item.cat] * 40); 
+                    score -= (penalizedCategories[item.cat] * 40);
                 }
 
                 return { item, score };
             });
 
-            // Re-orders recommendations based on AI score compatibility matrices
+            // Re-sort elements via evaluation data metrics
             scoredItems.sort((a, b) => b.score - a.score);
+            let topTenMatches = scoredItems.slice(0, 10).map(si => si.item);
 
-            // Extraction of exactly 10 high-value targets
-            let finalTen = scoredItems.slice(0, 10).map(si => si.item);
-
-            // Safety net data expander if data pool matches drop low due to user down-voting everything
-            while (finalTen.length < 10) {
-                let id = finalTen.length + 1;
-                finalTen.push({
-                    name: `AI Generated Alternative Plan #${id}`,
-                    cat: "Synthetic Match",
-                    desc: "An adaptive backup activity formulated automatically to maintain data balance requirements."
+            // Synthetic padding loop to enforce absolute delivery constraints of exactly 10 cards
+            while (topTenMatches.length < 10) {
+                let identifier = topTenMatches.length + 1;
+                topTenMatches.push({
+                    name: `AI Refinement Concept Alternate #${identifier}`,
+                    cat: "Alternative Track",
+                    desc: "An alternative concept automatically calculated by learning from your active dislikes."
                 });
             }
 
-            document.getElementById('resultsHeader').innerText = `Your Top 10 High-Confidence AI Matches`;
-            renderDeckCollection(finalTen, radius);
+            document.getElementById('resultsHeader').innerText = appLocationConnected ? 
+                `AI Strategy Profile Matched to Local Climate Metrics (${mockTemperatureCelsius}°C)` : 
+                `AI Standard Calculation Match Layout`;
+
+            renderDeckCollection(topTenMatches);
             showView('resultsView');
         }
 
-        function renderDeckCollection(list, radius) {
+        function renderDeckCollection(list) {
             const container = document.getElementById('outputDeck');
             container.innerHTML = "";
 
@@ -563,53 +816,47 @@
                 const card = document.createElement('div');
                 card.className = "rec-card";
                 
-                const mapQuery = encodeURIComponent(item.name);
-                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
-
-                const calText = encodeURIComponent(`UpNext: ${item.name}`);
-                const calDetails = encodeURIComponent(`Personalized Activity Match: ${item.desc}`);
-                const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${calText}&details=${calDetails}&sf=true&output=xml`;
-
-                const actionButtonHtml = radius === "0" ? 
-                    `<span class="btn-sec">🏡 At-Home Base</span>` : 
-                    `<a href="${mapsUrl}" target="_blank" class="btn-maps">Get Me There</a>`;
+                const weatherContextTag = appLocationConnected && item.tempNeed === "Hot" ? 
+                    `<span class="weather-badge">☀️ Optimized for Hot Temperatures</span>` : "";
 
                 card.innerHTML = `
                     <div>
-                        <div style="display:flex; gap:1rem; align-items:center;">
-                            <span class="ai-badge">🤖 Match Strength Dynamic</span>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <span class="ai-badge">🤖 Match Corrected</span>
+                            ${weatherContextTag}
                         </div>
                         <h3>${item.name}</h3>
-                        <p style="font-size:1.2rem; color:var(--text-muted); margin-bottom: 0.5rem;">Category: ${item.cat} • Machine Learning Node Active</p>
-                        <p style="font-size:1.1rem; color:#60a5fa; font-weight:500;">${item.desc}</p>
+                        <p style="font-size:1.2rem; color:var(--text-muted); margin-bottom: 0.5rem;">Category Track: ${item.cat}</p>
+                        <p style="font-size:1.1rem; color:#f472b6; font-weight:500;">${item.desc}</p>
                     </div>
                     <div class="card-actions">
                         <button class="btn-dislike" onclick="trainModelDislike('${item.name}', '${item.cat}')">👎 Don't Like It</button>
-                        <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
-                        <a href="${googleCalendarUrl}" target="_blank" class="btn-sec" style="text-decoration:none; display:inline-flex; align-items:center;">📅 Schedule</a>
-                        ${actionButtonHtml}
+                        <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Bookmark</button>
+                        <button class="btn-maps" style="background: linear-gradient(135deg, #06b6d4, #0284c7);" onclick="fireSystemSharing('${item.name}')">🔗 Share</button>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // THE LEARNING AGENT LOOP LOGIC
         function trainModelDislike(name, category) {
-            // Log explicitly blocked entity
-            if (!blacklistedItems.includes(name)) {
-                blacklistedItems.push(name);
-            }
-            
-            // Train system weights against entire similarity clusters (Categories)
-            if (!penalizedCategories[category]) {
-                penalizedCategories[category] = 1;
-            } else {
-                penalizedCategories[category]++; // Increases training weight penalty over time
-            }
-
-            // Instantly recalculates the database and re-scores options live on-screen
+            if (!blacklistedItems.includes(name)) blacklistedItems.push(name);
+            penalizedCategories[category] = (penalizedCategories[category] || 0) + 1;
             processEngineRun();
+        }
+
+        function fireSystemSharing(activityName) {
+            const summaryString = `Take a look at this high-confidence activity recommendation: "${activityName}" — curated via UpNext Activity AI Engine!`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'UpNext Intelligent Activity Match',
+                    text: summaryString,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(summaryString);
+                alert("📋 Share card asset text generated and saved to device keyboard clipboard logs!");
+            }
         }
 
         function addFav(name) {
@@ -619,13 +866,7 @@
                 if(savedFavorites.length === 1) list.innerHTML = "";
                 
                 const li = document.createElement('li');
-                const mapQuery = encodeURIComponent(name);
-                
-                li.innerHTML = `
-                    <a class="favorite-anchor" href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank">
-                        ⭐ ${name} <span style="float:right; font-size:0.9rem; opacity:0.7;">📍 View Map ➔</span>
-                    </a>
-                `;
+                li.innerHTML = `<div style="padding: 0.6rem; background: rgba(255,255,255,0.08); border-radius: 8px; border-left: 4px solid var(--accent);">⭐ ${name}</div>`;
                 list.appendChild(li);
             }
         }
