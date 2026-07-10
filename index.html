@@ -10,7 +10,7 @@
             --card-bg: rgba(15, 23, 42, 0.75);
             --accent: #ec4899;
             --accent-glow: rgba(236, 72, 153, 0.4);
-            /* Softer text colors for readability */
+            /* Softer text colors */
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
             --success: #10b981;
@@ -112,7 +112,7 @@
         }
 
         .view-section {
-            display: block; /* Kept active for presentation */
+            display: block;
         }
 
         .welcome-hero {
@@ -130,7 +130,7 @@
             gap: 1.5rem;
         }
 
-        /* Hero Logo styling container */
+        /* Starting Page Logo Placement */
         .hero-logo-container {
             margin-bottom: 1rem;
         }
@@ -169,34 +169,62 @@
             margin-bottom: 1rem;
         }
 
-        /* Action Ending Section Styles */
-        .ending-action-box {
+        /* Recommendations Section at the end */
+        .suggestions-section {
             margin-top: 4rem;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
+            width: 100%;
+            text-align: left;
         }
 
-        .get-me-there-btn {
-            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-            color: white;
-            border: none;
-            padding: 1.2rem 3rem;
-            border-radius: 50px;
-            font-size: 1.4rem;
+        .suggestions-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
             font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        }
+
+        .suggestion-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .suggestion-details h3 {
+            font-size: 1.6rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .suggestion-details p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* Get Me There Button Layout */
+        .get-me-there-btn {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .get-me-there-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(236, 72, 153, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
         }
     </style>
 </head>
@@ -222,9 +250,21 @@
                 <h1>Welcome to UpNext</h1>
                 <p>Your beautiful, ultra-premium colorful smart assistant. Experience tailored intelligence wrapped in custom modern gradients.</p>
                 
-                <div class="ending-action-box">
-                    <button class="get-me-there-btn">Get Me There 🚀</button>
+                <div class="suggestions-section">
+                    <h2 class="suggestions-title">UpNext Suggestion</h2>
+                    
+                    <div class="suggestion-card">
+                        <div class="suggestion-details">
+                            <h3>🎳 Retro Bowling Lanes</h3>
+                            <p>123 Entertainment Blvd • Open until midnight</p>
+                        </div>
+                        
+                        <a href="https://www.google.com/maps/search/?api=1&query=bowling+alley" target="_blank" class="get-me-there-btn">
+                            Get Me There 📍
+                        </a>
+                    </div>
                 </div>
+
             </div>
         </section>
     </div>
