@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UpNext — Ultra Premium Colorful Smart Assistant</title>
+    <title>UpNext — Ultra Premium Smart Activity Assistant</title>
     <style>
         :root {
+            /* Default Mood Theme: Adventure/Default Hybrid */
             --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 35%, #831843 70%, #0f172a 100%);
-            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-bg: rgba(15, 23, 42, 0.65);
             --accent: #ec4899;
-            --accent-glow: rgba(236, 72, 153, 0.4);
-            /* Softer text colors */
+            --accent-glow: rgba(236, 72, 153, 0.3);
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
             --success: #10b981;
-            --danger: #ef4444;
             --gold: #facc15;
-            --neon-blue: #06b6d4;
+            
+            /* Mood Theme Lookup Library Colors */
+            --theme-adventure: linear-gradient(135deg, #2e1005 0%, #7c2d12 40%, #b45309 80%, #0f172a 100%);
+            --theme-relaxing: linear-gradient(135deg, #0c4a6e 0%, #0284c7 40%, #0ea5e9 80%, #0f172a 100%);
+            --theme-creative: linear-gradient(135deg, #4c1d95 0%, #6d28d9 40%, #a855f7 80%, #0f172a 100%);
+            --theme-social: linear-gradient(135deg, #451a03 0%, #78350f 40%, #d97706 80%, #0f172a 100%);
+            --theme-nature: linear-gradient(135deg, #064e3b 0%, #047857 40%, #10b981 80%, #0f172a 100%);
+            --theme-romantic: linear-gradient(135deg, #4c0519 0%, #9f1239 40%, #f43f5e 80%, #0f172a 100%);
+            --theme-productive: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 40%, #3b82f6 80%, #0f172a 100%);
+            --theme-nightlife: linear-gradient(135deg, #172554 0%, #3b0764 50%, #4a044e 80%, #0f172a 100%);
         }
 
         * {
@@ -30,26 +38,29 @@
             background: var(--bg-gradient);
             color: var(--text-main);
             min-height: 100vh;
-            transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background 1s ease;
             overflow-x: hidden;
-            font-size: 1.2rem;
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
+        /* Global Layout Components */
         header {
-            padding: 1.75rem 3rem;
+            padding: 1.25rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(20px);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .logo {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             cursor: pointer;
             background: linear-gradient(to right, #ff007f, #7000ff, #00f0ff);
@@ -57,217 +68,501 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .logo span {
+            -webkit-text-fill-color: initial;
+            color: #fff;
+            font-weight: 300;
+        }
+
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 1.2rem;
+            gap: 1rem;
         }
 
-        .streak-badge {
-            background: linear-gradient(45deg, #ff5e36, #f13c73);
-            color: #fff;
-            padding: 0.5rem 1.2rem;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 12px rgba(241, 60, 115, 0.3);
-        }
-
-        .header-share-btn {
-            background: linear-gradient(135deg, #06b6d4, #0ea5e9);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.3rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
-            transition: transform 0.2s;
-        }
-        .header-share-btn:hover { transform: scale(1.05); }
-
-        .premium-btn {
-            background: linear-gradient(45deg, #facc15, #ff8000);
+        .premium-badge {
+            background: linear-gradient(45deg, var(--gold), #ff8000);
             color: #0f172a;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 12px;
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
             font-weight: 800;
-            font-size: 1.1rem;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(250, 204, 21, 0.4);
-            transition: transform 0.2s;
         }
-        .premium-btn:hover { transform: scale(1.05); }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
 
         .container {
-            max-width: 1600px;
-            width: 95%;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
+            max-width: 1200px;
+            width: 92%;
+            margin: 2rem auto;
         }
 
-        .view-section {
+        /* Screen Management Switcher styling */
+        .app-screen {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .app-screen.active {
             display: block;
         }
 
-        .welcome-hero {
-            padding: 5rem 4rem;
-            background: var(--card-bg);
-            border-radius: 32px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            text-align: center;
-            margin-bottom: 3rem;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(12px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Starting Page Logo Placement */
-        .hero-logo-container {
-            margin-bottom: 1rem;
+        /* ---------------- HOME HUB PANEL STYLE ---------------- */
+        .welcome-hero {
+            padding: 3.5rem 2rem;
+            background: var(--card-bg);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            margin-bottom: 2rem;
         }
-        
-        .hero-logo-img {
-            max-width: 180px;
-            height: auto;
+
+        .hero-badge-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
             filter: drop-shadow(0 0 15px var(--accent-glow));
         }
 
         .welcome-hero h1 {
-            font-size: 4.5rem;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.04em;
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
             font-weight: 900;
             background: linear-gradient(to right, #ffffff, #f472b6, #38bdf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.75rem;
         }
 
         .welcome-hero p {
             color: var(--text-muted);
-            font-size: 1.4rem;
-            max-width: 800px;
+            max-width: 750px;
+            margin: 0 auto 2rem auto;
+            font-size: 1.15rem;
             line-height: 1.6;
         }
 
-        .status-pill {
+        /* Universal Quick Search Bar styling */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 0.5rem 0.5rem 1.2rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.25);
             background: rgba(255, 255, 255, 0.1);
-            padding: 0.75rem 1.75rem;
-            border-radius: 30px;
-            color: var(--text-muted);
+        }
+
+        .search-container input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            flex-grow: 1;
             font-size: 1.1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: inline-block;
-            margin-bottom: 1rem;
         }
 
-        /* Recommendations Section at the end */
-        .suggestions-section {
-            margin-top: 4rem;
-            width: 100%;
-            text-align: left;
+        .search-container input::placeholder {
+            color: rgba(255,255,255,0.4);
         }
 
-        .suggestions-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-main);
-            font-weight: 800;
+        .primary-action-btn {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .suggestion-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .primary-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
+        }
+
+        /* Home Layout Hub Grid */
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hub-card {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            padding: 2rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hub-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .history-list, .favorites-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .item-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 2rem;
+            background: rgba(255,255,255,0.04);
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
         }
 
-        .suggestion-details h3 {
+        /* Mini Calendar Framework */
+        .calendar-box {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.35rem;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        .calendar-day-header { font-weight: bold; color: var(--text-muted); padding-bottom: 0.25rem;}
+        .calendar-day { background: rgba(255,255,255,0.05); padding: 0.5rem 0; border-radius: 6px; cursor: pointer;}
+        .calendar-day.active { background: var(--accent); font-weight: bold;}
+
+        /* ---------------- QUESTIONNAIRE PANEL STYLE ---------------- */
+        .wizard-card {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+        }
+
+        .wizard-step {
+            display: none;
+        }
+        .wizard-step.active {
+            display: block;
+        }
+
+        .wizard-card h2 {
             font-size: 1.6rem;
-            color: var(--text-main);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            letter-spacing: -0.02em;
         }
 
-        .suggestion-details p {
-            font-size: 1.1rem;
+        .quiz-group {
+            margin-bottom: 2rem;
+        }
+
+        .quiz-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
             color: var(--text-muted);
+            font-size: 1rem;
         }
 
-        /* Get Me There Button Layout */
-        .get-me-there-btn {
-            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        /* Specialized Interactive Selector Grids */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .option-tile {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.8rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .option-tile:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .option-tile.selected {
+            background: var(--accent);
+            border-color: #fff;
+            box-shadow: 0 0 12px rgba(236, 72, 153, 0.4);
+            font-weight: bold;
+        }
+
+        .wizard-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.5rem;
+        }
+
+        /* ---------------- RECOMMENDATIONS ENGINE PANEL ---------------- */
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        .rec-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .rec-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.75rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #3b82f6;
             color: white;
-            text-decoration: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            white-space: nowrap;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: inline-flex;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-bottom-right-radius: 10px;
+            font-weight: bold;
+        }
+
+        .rec-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.4rem;
+            display: flex;
             align-items: center;
             gap: 0.5rem;
+            margin-top: 0.5rem;
         }
 
-        .get-me-there-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+        .rec-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+
+        .rec-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .rec-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .rec-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 180px;
+        }
+
+        .action-btn {
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-maps { background: linear-gradient(135deg, #06b6d4, #3b82f6); color: white; }
+        .btn-save { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-schedule { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.1); }
+
+        .action-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* ---------------- PRICING HUB STYLING ---------------- */
+        .pricing-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .pricing-title h2 { font-size: 2rem; font-weight: 900;}
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            align-items: stretch;
+        }
+
+        .price-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            backdrop-filter: blur(15px);
+        }
+
+        .price-card.featured {
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+            transform: scale(1.02);
+        }
+
+        .featured-tag {
+            position: absolute;
+            top: -12px;
+            right: 24px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .price-header h3 { font-size: 1.5rem; margin-bottom: 0.5rem;}
+        .price-amt { font-size: 2.2rem; font-weight: 900; margin: 1rem 0; color: #fff;}
+        .price-amt span { font-size: 1rem; color: var(--text-muted); font-weight: normal;}
+        
+        .price-features {
+            list-style: none;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .price-features li { margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem;}
+
+        .pay-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary-pay { background: var(--accent); color: white;}
+        .btn-secondary-pay { background: rgba(255,255,255,0.1); color: white;}
+
+        /* Mobile Breakpoints Fixes */
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .rec-card { grid-template-columns: 1fr; }
+            .rec-actions { width: 100%; }
+            .price-card.featured { transform: none; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">UpNext</div>
+        <div class="logo" onclick="showScreen('home-screen')">UpNext <span>u</span></div>
         <div class="header-controls">
-            <div class="streak-badge">🔥 5 Day Streak</div>
-            <button class="premium-btn">Go Premium</button>
-            <button class="header-share-btn">✨ Share</button>
+            <div class="premium-badge" onclick="showScreen('pricing-screen')">💎 Go Pro</div>
+            <button class="nav-btn" onclick="showScreen('home-screen')">🏠 Hub</button>
         </div>
     </header>
 
     <div class="container">
-        <section class="view-section">
+
+        <section id="home-screen" class="app-screen active">
             <div class="welcome-hero">
-                <div class="hero-logo-container">
-                    <img src="logo.png" alt="UpNext Logo" class="hero-logo-img">
+                <span class="hero-badge-icon">🔮</span>
+                <h1>Stop Scrolling. Start Exploring.</h1>
+                <p>UpNext eliminates doomscrolling instantly. We cross-reference your mood, immediate availability, exact budget, and real live weather constraints to output 10 hyper-curated, real-world options matching this exact moment.</p>
+                
+                <div class="search-container">
+                    <input type="text" id="quickSearchInput" placeholder="Quick search real nearby places (e.g., Coffee shop, Bowling, Date ideas)...">
+                    <button class="primary-action-btn" onclick="triggerQuickSearch()">Search</button>
                 </div>
-                
-                <span class="status-pill">System Status: Premium Active</span>
-                <h1>Welcome to UpNext</h1>
-                <p>Your beautiful, ultra-premium colorful smart assistant. Experience tailored intelligence wrapped in custom modern gradients.</p>
-                
-                <div class="suggestions-section">
-                    <h2 class="suggestions-title">UpNext Suggestion</h2>
-                    
-                    <div class="suggestion-card">
-                        <div class="suggestion-details">
-                            <h3>🎳 Retro Bowling Lanes</h3>
-                            <p>123 Entertainment Blvd • Open until midnight</p>
-                        </div>
-                        
-                        <a href="https://www.google.com/maps/search/?api=1&query=bowling+alley" target="_blank" class="get-me-there-btn">
-                            Get Me There 📍
-                        </a>
+
+                <button class="primary-action-btn" style="padding: 1rem 2.5rem; font-size: 1.2rem;" onclick="showScreen('quiz-screen')">✨ Start Questionnaire</button>
+            </div>
+
+            <div class="hub-grid">
+                <div class="hub-card">
+                    <h2>📅 Scheduled Plans</h2>
+                    <div class="calendar-box">
+                        <div class="calendar-day-header">M</div><div class="calendar-day-header">T</div><div class="calendar-day-header">W</div><div class="calendar-day-header">T</div><div class="calendar-day-header">F</div><div class="calendar-day-header">S</div><div class="calendar-day-header">S</div>
+                        <div class="calendar-day">6</div><div class="calendar-day">7</div><div class="calendar-day">8</div><div class="calendar-day">9</div><div class="calendar-day active">10</div><div class="calendar-day">11</div><div class="calendar-day">12</div>
+                    </div>
+                    <div style="margin-top:1rem;" class="history-list">
+                        <div class="item-row"><span>🎳 Retro Bowling Lanes</span><small>Tonight 8PM</small></div>
                     </div>
                 </div>
-
-            </div>
-        </section>
-    </div>
-
-</body>
-</html>
+                <div class="hub-card">
+                    <h2>💖 Favorites Section</h2>
+                    <div class="favorites-list">
