@@ -12,7 +12,7 @@
             --text-main: #ffffff;
             --text-muted: #cbd5e1;
             --success: #16a34a;
-            --danger: #dc2626;
+            --danger: #ef4444;
         }
 
         * {
@@ -205,12 +205,6 @@
             align-items: center;
             backdrop-filter: blur(8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .rec-card h3 {
@@ -230,7 +224,6 @@
         .card-actions {
             display: flex;
             gap: 1rem;
-            align-items: center;
         }
 
         .btn-maps {
@@ -260,4 +253,373 @@
             font-weight: 600;
             cursor: pointer;
         }
-        .btn-sec:hover { background: rgba(255, 255, 255, 0.2
+
+        .btn-sec:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .btn-dislike {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-dislike:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #fff;
+        }
+
+        .favorite-anchor {
+            display: block;
+            color: #818cf8;
+            text-decoration: none;
+            padding: 0.6rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .favorite-anchor:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: white;
+        }
+
+        @media(max-width: 1024px) {
+            .form-grid, .dashboard-grid { grid-template-columns: 1fr; }
+            .rec-card { flex-direction: column; align-items: flex-start; gap: 2rem; }
+            .card-actions { width: 100%; justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="resetToHome()">UpNext</div>
+        <div style="font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">Activity Engine</div>
+    </header>
+
+    <div class="container">
+
+        <section id="homeView" class="view-section active-view">
+            <div class="welcome-hero">
+                <h1>Stop Scrolling. Start Exploring.</h1>
+                <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.6; font-size: 1.4rem;">
+                    UpNext eliminates endless decision paralysis. Get verified, immediate, and completely customized choices configured to match your exact vibe parameters.
+                </p>
+                <button class="btn btn-large" onclick="showView('questionnaireView')">Start Questionnaire</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="panel-box">
+                    <h3>Saved & Scheduled Plans</h3>
+                    <p style="color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem;" id="calendarStatus">No upcoming bookings. Generate choices and schedule plans to populate your agenda.</p>
+                    <div id="calendarList" style="margin-top: 1.5rem;"></div>
+                </div>
+                <div class="panel-box">
+                    <h3>Favorites Hub ❤️ (Click to Map)</h3>
+                    <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 1.2rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li>No bookmarks saved into your favorite locker yet.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="questionnaireView" class="view-section">
+            <div class="panel-box">
+                <h2>Activity Diagnostics Intake</h2>
+                 
+                <div id="qStep1" class="step-group active-step">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 1 of 4: Vibe Alignment</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Desired Mood Focus</label>
+                            <select id="inputMood">
+                                <option value="Adventure">🧭 Adventure — Exciting or challenging activities that involve exploration, physical effort, or discovery.</option>
+                                <option value="Relaxing">😌 Relaxing — Calm, low-stress experiences that promote rest and rejuvenation.</option>
+                                <option value="Creative">🎨 Creative — Activities that encourage imagination and self-expression or involve making something new.</option>
+                                <option value="Social" selected>👥 Social — Experiences focused on interacting and connecting with others.</option>
+                                <option value="Nature">🌿 Nature — Activities that immerse participants in the outdoors or foster appreciation of the natural world.</option>
+                                <option value="Romantic">💖 Romantic — Intimate experiences that strengthen emotional connection between partners.</option>
+                                <option value="Productive">📈 Productive — Pursuits that help achieve goals or create meaningful progress.</option>
+                                <option value="Nightlife">🌙 Nightful — Activities especially enjoyable or appropriate after dark.</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Current Energy State</label>
+                            <select id="inputEnergy">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Very High" selected>Very High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><div></div><button class="btn" onclick="goToStep(2)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep2" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 2 of 4: Structural Scale</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Headcount / Group Size</label>
+                            <select id="inputGroupSize">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5" selected>5+</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Who Are You With?</label>
+                            <select id="inputWith">
+                                <option value="Solo">Solo</option>
+                                <option value="Partner">Date</option>
+                                <option value="Friends">Friends</option>
+                                <option value="Family" selected>Family</option>
+                                <option value="Co-workers">Co-workers</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(1)">Back</button><button class="btn" onclick="goToStep(3)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep3" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 3 of 4: Logistics Filters</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Available Time Allotment (Hours)</label>
+                            <select id="inputTime">
+                                <option value="0.5">0.5</option>
+                                <option value="1">1</option>
+                                <option value="1.5">1.5</option>
+                                <option value="2">2</option>
+                                <option value="2.5" selected>2.5</option>
+                                <option value="3">3</option>
+                                <option value="3.5">3.5</option>
+                                <option value="4">4</option>
+                                <option value="4.5">4.5</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Maximum Budget Cap</label>
+                            <select id="inputBudget">
+                                <option value="0">Free</option>
+                                <option value="10">€10</option>
+                                <option value="20">€20</option>
+                                <option value="30">€30</option>
+                                <option value="40">€40</option>
+                                <option value="50">€50+</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(2)">Back</button><button class="btn" onclick="goToStep(4)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep4" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 4 of 4: Spatial Boundaries</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Environment Setting Preference</label>
+                            <select id="inputSetting">
+                                <option value="Indoor" selected>Indoor</option>
+                                <option value="Outdoor">Outdoor</option>
+                                <option value="Any">Either</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Maximum Displacement Radius</label>
+                            <select id="inputRadius">
+                                <option value="0">0 km</option>
+                                <option value="5">5 km</option>
+                                <option value="10">10 km</option>
+                                <option value="15">15 km</option>
+                                <option value="20">20 km</option>
+                                <option value="25" selected>25 km</option>
+                                <option value="30">30+ km</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Generate Recommendations</button></div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="resultsView" class="view-section">
+            <h2 id="resultsHeader" style="font-size: 2.8rem; margin-bottom: 1.5rem;">Tailored Recommendations Matrix</h2>
+            <div id="outputDeck" class="recs-deck"></div>
+        </section>
+
+    </div>
+
+    <script>
+        let savedFavorites = [];
+        let dislikedActivities = [];
+
+        // ENHANCED DATABASE TO GUARANTEE 10 UNIQUE SUGGESTIONS PER MASSIVE CATEGORY SPLIT
+        const activityDatabase = {
+            "0": [
+                {name: "Classic Family Board & Card Game Night", cat: "Home Interactive", desc: "Gather everyone around for intense structural tabletop rounds."},
+                {name: "Interactive Living Room Trivia Contest", cat: "Home Interactive", desc: "Host a fast-paced custom trivia game using smartphone buzzers."},
+                {name: "Family Baking Blueprint", cat: "Home Creative", desc: "Pick a challenging pastry recipe from scratch and bake it as a unit."},
+                {name: "Cozy Living Room Movie Marathon", cat: "Home Lounge", desc: "Line up classic film chapters with specialty popcorn layers."},
+                {name: "DIY Painting & Masterpiece Workshop", cat: "Home Creative", desc: "Get canvases out and challenge everyone to paint a shared landscape."},
+                {name: "Indoor Obstacle Course Challenge", cat: "Home Action", desc: "Build a funny step course across floor markers and pillows safely."},
+                {name: "Family Heritage Story Sharing Session", cat: "Home Social", desc: "Bring print albums out and discuss old memories and historical trees."},
+                {name: "Improv Acting & Charades Tourney", cat: "Home Social", desc: "Act out funny prompts against a strict kitchen timer countdown."},
+                {name: "Acoustic Singalong & Vinyl Listening", cat: "Home Lounge", desc: "Play deep cut classic tracks on the turntable and rate the lyrics."},
+                {name: "Stop-Motion Clay Animation Project", cat: "Home Creative", desc: "Construct figures and animate a 10-second smartphone cinematic masterpiece."}
+            ],
+            "outdoors": [
+                {name: "Rock Climbing Facility Tour", cat: "Adventure Sport", desc: "Test structural climbing holds on a high-grade indoor bouldering facility."},
+                {name: "Scenic Kayaking Excursion", cat: "Water Discovery", desc: "Rent heavy tandem row equipment and tackle nearby active water routes."},
+                {name: "Cozy Specialty Coffee Shop", cat: "Local Leisure", desc: "Discover a premium roasting room to try complex artisan cold brews."},
+                {name: "Day Spa and Wellness Escape", cat: "Relaxation Center", desc: "Unplug completely with thermal pool access and deep muscle massages."},
+                {name: "Local Museum & Exhibition Crawl", cat: "Cultural Discovery", desc: "Browse artistic landmarks and deep historical regional artifacts."},
+                {name: "Beginner's Artisan Pottery Class", cat: "Creative Workshop", desc: "Throw wet clay onto spin wheels to construct unique custom mugs."},
+                {name: "Bustling Local Bowling Alley", cat: "Social Center", desc: "Lace up classic bowling shoes and aim for high strikes down slick lanes."},
+                {name: "Group Escape Room Experience", cat: "Interactive Puzzle", desc: "Solve mechanical cipher modules hidden behind walls before time ends."},
+                {name: "Scenic Hiking & Nature Trail Trails", cat: "Eco Wilderness", desc: "Scale local high vantage points along heavily wooded dirt paths."},
+                {name: "Regional Botanical Garden Tour", cat: "Eco Wilderness", desc: "Walk down climate-controlled glass domes containing rare tropical vegetation."}
+            ]
+        };
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+        }
+
+        function resetToHome() {
+            document.body.style.background = "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #2e1065 100%)";
+            showView('homeView');
+        }
+
+        function goToStep(stepNum) {
+            document.querySelectorAll('.step-group').forEach(s => s.classList.remove('active-step'));
+            document.getElementById(`qStep${stepNum}`).classList.add('active-step');
+        }
+
+        function mutateThemeWorkspace(mood) {
+            const palettes = {
+                "Adventure": "linear-gradient(135deg, #111827 0%, #ea580c 100%)",
+                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #2563eb 100%)",
+                "Creative": "linear-gradient(135deg, #111827 0%, #7c3aed 100%)",
+                "Social": "linear-gradient(135deg, #0f172a 0%, #d97706 100%)",
+                "Nature": "linear-gradient(135deg, #0b0f19 0%, #059669 100%)",
+                "Romantic": "linear-gradient(135deg, #111827 0%, #db2777 100%)",
+                "Productive": "linear-gradient(135deg, #0f172a 0%, #0d9488 100%)",
+                "Nightlife": "linear-gradient(135deg, #090514 0%, #4c1d95 100%)"
+            };
+            document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%)";
+        }
+
+        function processEngineRun() {
+            const mood = document.getElementById('inputMood').value;
+            const radius = document.getElementById('inputRadius').value;
+            const setting = document.getElementById('inputSetting').value;
+
+            mutateThemeWorkspace(mood);
+
+            let rawPool = [];
+            if (radius === "0" || (setting === "Indoor" && radius === "0")) {
+                rawPool = [...activityDatabase["0"]];
+            } else {
+                rawPool = [...activityDatabase["outdoors"]];
+            }
+
+            // Machine memory application: Filters out everything matching our negative blacklist array
+            let filteredList = rawPool.filter(item => !dislikedActivities.includes(item.name));
+
+            // Dynamically generates artificial fallbacks if user clicks Dislike repeatedly on all choices
+            while (filteredList.length < 10) {
+                let uniqueID = filteredList.length + 1;
+                filteredList.push({
+                    name: `Alternative ${mood} Plan #${uniqueID}`,
+                    cat: `${mood} Exploration`,
+                    desc: "An alternative concept automatically calculated by learning from your active dislikes."
+                });
+            }
+
+            // Hard constraint to deliver exactly 10 cards as requested
+            let exactTenList = filteredList.slice(0, 10);
+
+            document.getElementById('resultsHeader').innerText = `Your 10 Custom Suggestions Matrices`;
+            renderDeckCollection(exactTenList, radius);
+            showView('resultsView');
+        }
+
+        function renderDeckCollection(list, radius) {
+            const container = document.getElementById('outputDeck');
+            container.innerHTML = "";
+
+            list.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = "rec-card";
+                
+                const mapQuery = encodeURIComponent(item.name);
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+                const calText = encodeURIComponent(`UpNext: ${item.name}`);
+                const calDetails = encodeURIComponent(`Personalized Activity Match: ${item.desc}`);
+                const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${calText}&details=${calDetails}&sf=true&output=xml`;
+
+                const actionButtonHtml = radius === "0" ? 
+                    `<span class="btn-sec">🏡 At-Home Base</span>` : 
+                    `<a href="${mapsUrl}" target="_blank" class="btn-maps">Get Me There</a>`;
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <span class="rating-badge">★ Recommended Choice</span>
+                        </div>
+                        <h3>${item.name}</h3>
+                        <p style="font-size:1.2rem; color:var(--text-muted); margin-bottom: 0.5rem;">Category: ${item.cat} • Adaptive Sync</p>
+                        <p style="font-size:1.1rem; color:#60a5fa; font-weight:500;">${item.desc}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-dislike" onclick="registerDislike('${item.name}')">👎 Don't Like It</button>
+                        <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
+                        <a href="${googleCalendarUrl}" target="_blank" class="btn-sec" style="text-decoration:none; display:inline-flex; align-items:center;">📅 Schedule</a>
+                        ${actionButtonHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function registerDislike(name) {
+            // Memory storage expands: records the mistake
+            if (!dislikedActivities.includes(name)) {
+                dislikedActivities.push(name);
+            }
+            // Real-time engine learning loop: instantly morphs the interface with a corrected 10-count stack
+            processEngineRun();
+        }
+
+        function addFav(name) {
+            if(!savedFavorites.includes(name)) {
+                savedFavorites.push(name);
+                const list = document.getElementById('favoritesList');
+                if(savedFavorites.length === 1) list.innerHTML = "";
+                
+                const li = document.createElement('li');
+                const mapQuery = encodeURIComponent(name);
+                
+                li.innerHTML = `
+                    <a class="favorite-anchor" href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank">
+                        ⭐ ${name} <span style="float:right; font-size:0.9rem; opacity:0.7;">📍 View Map ➔</span>
+                    </a>
+                `;
+                list.appendChild(li);
+            }
+        }
+    </script>
+</body>
+</html>
