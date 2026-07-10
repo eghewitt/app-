@@ -118,7 +118,7 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 2.5rem;
             margin: 3rem 0;
         }
@@ -143,9 +143,15 @@
             border: 2px solid rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             color: white;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             outline: none;
             transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        select option {
+            background: #1e1b4b;
+            color: white;
         }
 
         select:focus, input:focus {
@@ -296,7 +302,7 @@
                     <div id="calendarList" style="margin-top: 1.5rem;"></div>
                 </div>
                 <div class="panel-box">
-                    <h3>Favorites Hub Hub ❤️ (Click to Map)</h3>
+                    <h3>Favorites Hub ❤️ (Click to Map)</h3>
                     <ul id="favoritesList" style="list-style: none; margin-top: 0.5rem; color: var(--text-muted); font-size: 1.2rem; display: flex; flex-direction: column; gap: 0.75rem;">
                         <li>No bookmarks saved into your favorite locker yet.</li>
                     </ul>
@@ -308,29 +314,29 @@
         <section id="questionnaireView" class="view-section">
             <div class="panel-box">
                 <h2>Activity Diagnostics Intake</h2>
-                
+                 
                 <div id="qStep1" class="step-group active-step">
                     <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 1 of 4: Vibe Alignment</p>
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Desired Mood Focus</label>
                             <select id="inputMood">
-                                <option value="Adventure">Adventure 🌄</option>
-                                <option value="Relaxing">Relaxing 🌊</option>
-                                <option value="Creative">Creative 🎨</option>
-                                <option value="Social" selected>Social 🎉</option>
-                                <option value="Nature">Nature 🌿</option>
-                                <option value="Romantic">Romantic ❤️</option>
-                                <option value="Productive">Productive 💼</option>
-                                <option value="Nightlife">Nightlife 🌙</option>
+                                <option value="Adventure">🧭 Adventure — Exciting or challenging activities that involve exploration, physical effort, or discovery (e.g., rock climbing, exploring a new neighborhood, kayaking).</option>
+                                <option value="Relaxing">😌 Relaxing — Calm, low-stress experiences that promote rest and rejuvenation (e.g., reading in a café, taking a warm bath, meditating).</option>
+                                <option value="Creative">🎨 Creative — Activities that encourage imagination and self-expression or involve making something new (e.g., painting, writing poetry, baking a new recipe).</option>
+                                <option value="Social" selected>👥 Social — Experiences focused on interacting and connecting with others (e.g., hosting a game night, having dinner with friends, joining a club meeting).</option>
+                                <option value="Nature">🌿 Nature — Activities that immerse participants in the outdoors or foster appreciation of the natural world (e.g., hiking, birdwatching, visiting a botanical garden).</option>
+                                <option value="Romantic">💖 Romantic — Intimate experiences that strengthen emotional connection between partners (e.g., a candlelit dinner, stargazing together, a sunset walk).</option>
+                                <option value="Productive">📈 Productive — Pursuits that help achieve goals or create meaningful progress (e.g., organizing a workspace, studying a new skill, planning a budget).</option>
+                                <option value="Nightlife">🌙 Nightful — Activities especially enjoyable or appropriate after dark (e.g., attending a concert, taking a moonlit walk, visiting a night market).</option>
                             </select>
                         </div>
                         <div class="form-item">
                             <label>Current Energy State</label>
                             <select id="inputEnergy">
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Very High" selected>Very High</option>
+                                <option value="Low">Low — Lazy day / hardly any energy (e.g., reading, watching shows or movies, spa/massage).</option>
+                                <option value="Medium">Medium — Willing to put in effort for something but not too intense (e.g., family game night, small group activities, sightseeing).</option>
+                                <option value="Very High" selected>Very High — Willing to do something fun, energetic, or intense (e.g., running/racing, sports, outdoor games).</option>
                             </select>
                         </div>
                     </div>
@@ -342,16 +348,22 @@
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Headcount / Group Size</label>
-                            <input type="number" id="inputGroupSize" value="5" min="1">
+                            <select id="inputGroupSize">
+                                <option value="1">👤 1 — Activities designed to be enjoyed alone, emphasizing independence, personal reflection, or self-paced exploration (e.g., journaling, solo hiking, visiting a museum).</option>
+                                <option value="2">👥 2 — Experiences best suited for pairs, allowing for meaningful conversation and shared attention (e.g., playing tennis, having coffee together, taking a dance class).</option>
+                                <option value="3">🧑‍🤝‍🧑 3 — Small-group activities that balance close interaction with varied perspectives (e.g., board games, cooking a meal together, a small study session).</option>
+                                <option value="4">🎉 4 — Group experiences that encourage teamwork and lively social dynamics (e.g., an escape room, doubles sports, a trivia night).</option>
+                                <option value="5" selected>🥳 5+ — Activities that thrive with larger groups and create a sense of community or celebration (e.g., a picnic, karaoke, a team sport or party).</option>
+                            </select>
                         </div>
                         <div class="form-item">
                             <label>Who Are You With?</label>
                             <select id="inputWith">
-                                <option value="Solo">Solo (Self-Discovery)</option>
-                                <option value="Partner">Date / Romantic Partner</option>
-                                <option value="Friends">Friends Network</option>
-                                <option value="Family" selected>Family Circle</option>
-                                <option value="Co-workers">Co-workers / Associates</option>
+                                <option value="Solo">🧘 Solo — Activities intended for one person, offering independence, self-reflection, or personal enjoyment (e.g., reading a book, going for a run, visiting a gallery).</option>
+                                <option value="Partner">💞 Date — Activities that foster connection, conversation, and shared memories between two people (e.g., a candlelit dinner, a couples’ cooking class, stargazing).</option>
+                                <option value="Friends">🧑‍🤝‍🧑 Friends — Fun, engaging experiences that encourage bonding and group interaction among friends (e.g., bowling, a movie night, exploring a new café).</option>
+                                <option value="Family" selected>👨‍👩‍👧‍👦 Family — Experiences that are enjoyable and appropriate for family members of different ages to share together (e.g., a picnic, board games, a trip to the zoo).</option>
+                                <option value="Co-workers">💼 Co-workers — Activities that support teamwork, networking, or casual camaraderie in a professional setting (e.g., a team lunch, an escape room, a volunteer outing).</option>
                             </select>
                         </div>
                     </div>
@@ -363,11 +375,29 @@
                     <div class="form-grid">
                         <div class="form-item">
                             <label>Available Time Allotment (Hours)</label>
-                            <input type="number" id="inputTime" value="2.5" step="0.5" min="0.5">
+                            <select id="inputTime">
+                                <option value="0.5">⏱️ 0.5 — About 30 minutes, ideal for a quick break or brief burst of enjoyment (e.g., a short walk, coffee break, guided meditation).</option>
+                                <option value="1">🕐 1 — Around one hour, allowing for a focused yet manageable outing (e.g., a workout class, visiting a local exhibit, a board game).</option>
+                                <option value="1.5"> Live 1.5 — About 90 minutes, enough time to become immersed without a major commitment (e.g., a movie, cooking lesson, scenic bike ride).</option>
+                                <option value="2">🕑 2 — Two hours, providing a satisfying, well-rounded experience (e.g., a museum visit, a hiking trail, a dinner outing).</option>
+                                <option value="2.5" selected>🕝 2.5 — Roughly two and a half hours, suitable for deeper engagement or travel time (e.g., a workshop, a matinee with lunch, a longer excursion).</option>
+                                <option value="3">🕒 3 — About three hours, allowing for a substantial and memorable experience (e.g., a half-day tour, a sporting event, a creative project).</option>
+                                <option value="3.5">🕞 3.5 — Around three and a half hours, providing ample time for exploration and connection (e.g., an extended hike, a group class series, a beach outing).</option>
+                                <option value="4">🕓 4 — Approximately four hours, often forming a major part of the day (e.g., a road trip segment, a festival visit, a volunteer shift).</option>
+                                <option value="4.5">🕟 4.5 — About four and a half hours, allowing for a rich, unhurried pace (e.g., a day-trip activity, a long workshop, a themed event).</option>
+                                <option value="5">⌛ 5+ — Five hours or more, typically involving a full-day adventure or significant project (e.g., camping, a full-day excursion, a home improvement project).</option>
+                            </select>
                         </div>
                         <div class="form-item">
                             <label>Maximum Budget Cap (€/$)</label>
-                            <input type="number" id="inputBudget" value="60" step="10">
+                            <select id="inputBudget">
+                                <option value="0">🆓 Free — Requires no spending, making it accessible and easy to enjoy anytime (e.g., public park, going for a walk, free community event).</option>
+                                <option value="10">💶 €10 — Low-cost experiences up to €10 per person (e.g., grabbing coffee and a pastry, renting a bike for an hour, small entry fee).</option>
+                                <option value="20">💶 €20 — Affordable outings up to €20 per person (e.g., seeing a movie, casual lunch, group fitness class).</option>
+                                <option value="30">💶 €30 — Moderately priced activities allowing a wider range of experiences (e.g., museum plus lunch, beginner workshop, nice dinner).</option>
+                                <option value="40">💶 €40 — Comfortably priced experiences that may include premium options (e.g., spa treatment, guided tour, tickets to a performance).</option>
+                                <option value="60" selected>💎 €50+ — Higher-budget activities offering an elaborate, memorable experience (e.g., gourmet meal, day trip, adventure excursion).</option>
+                            </select>
                         </div>
                     </div>
                     <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(2)">Back</button><button class="btn" onclick="goToStep(4)">Next Screen</button></div>
@@ -379,14 +409,22 @@
                         <div class="form-item">
                             <label>Environment Setting Preference</label>
                             <select id="inputSetting">
-                                <option value="Indoor" selected>Indoor Setting</option>
-                                <option value="Outdoor">Outdoor Setting</option>
-                                <option value="Any">Any / Dual Setting</option>
+                                <option value="Indoor" selected>🏠 Indoor — Primarily inside, offering comfort and shelter from weather conditions (e.g., visiting a museum, baking, attending a fitness class).</option>
+                                <option value="Outdoor">🌳 Outdoor — Open-air environments that encourage fresh air and interaction with surroundings (e.g., hiking, having a picnic, playing a sport in the park).</option>
+                                <option value="Any">🔄 Either — Flexible activities that can be enjoyed equally well indoors or outdoors depending on preference (e.g., reading, yoga, sketching).</option>
                             </select>
                         </div>
                         <div class="form-item">
                             <label>Maximum Displacement Radius (Kilometers)</label>
-                            <input type="number" id="inputRadius" value="25">
+                            <select id="inputRadius">
+                                <option value="0">📍 0 km — Available right where you are, requiring no travel (e.g., home workouts, cooking, reading).</option>
+                                <option value="5">🚶 5 km — Nearby experiences within a short walk, bike ride, or drive (e.g., visiting a local café, a neighborhood park, or a nearby shop).</option>
+                                <option value="10">🚲 10 km — Short outings easily reached that fit into a casual trip (e.g., museum visit, fitness class, scenic trail).</option>
+                                <option value="15">🚗 15 km — Moderate-distance activities that may involve a dedicated drive or transit ride (e.g., exploring a neighboring town or special event).</option>
+                                <option value="20">🛣️ 20 km — Excursions that feel like a mini getaway while remaining close to home (e.g., regional attraction, larger nature reserve).</option>
+                                <option value="25" selected>🌄 25 km — Destinations worth a longer trip for a richer experience (e.g., day-use beach, popular hiking area, unique restaurant).</option>
+                                <option value="30">🧳 30+ km — Involves significant travel, often becoming the centerpiece of the day (e.g., day trip, theme park, countryside adventure).</option>
+                            </select>
                         </div>
                     </div>
                     <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Generate Recommendations</button></div>
@@ -436,7 +474,6 @@
         }
 
         function processEngineRun() {
-            // Pull user values dynamically from the forms
             const mood = document.getElementById('inputMood').value;
             const energy = document.getElementById('inputEnergy').value;
             const withWho = document.getElementById('inputWith').value;
@@ -446,7 +483,6 @@
 
             mutateThemeWorkspace(mood);
 
-            // Generative conditional builder to establish high-precision personalized options
             let dynamicItems = [];
 
             if (setting === "Indoor") {
@@ -475,7 +511,6 @@
                 }
             }
 
-            // Reliable fallbacks keeping your real local query structural context completely preserved
             const baseFallbacks = [
                 { name: `${mood} experiences nearby`, cat: "Local Discovery", desc: `Custom matching query aligned with your active ${mood} lifestyle focus setting.` },
                 { name: `Top rated entertainment spots nearby`, cat: "Fun Center", desc: "Dynamic geographic matching finding premium local spaces configured to your location radius." },
@@ -484,7 +519,6 @@
                 { name: `Trending points of interest nearby`, cat: "Exploration Spot", desc: "Popular local public squares, structural land markers, or historical layout hubs." }
             ];
 
-            // Mix customized generation flags with backup location searches to reach 10 total items
             let generatedList = [...dynamicItems];
             baseFallbacks.forEach(fb => {
                 if(generatedList.length < 10) {
