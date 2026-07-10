@@ -334,9 +334,9 @@
                         <div class="form-item">
                             <label>Current Energy State</label>
                             <select id="inputEnergy">
-                                <option value="Low">Low — Lazy day / hardly any energy.</option>
-                                <option value="Medium">Medium — Willing to put in effort for something but not too intense.</option>
-                                <option value="Very High" selected>Very High — Willing to do something fun, energetic, or intense.</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Very High" selected>Very High</option>
                             </select>
                         </div>
                     </div>
@@ -344,4 +344,290 @@
                 </div>
 
                 <div id="qStep2" class="step-group">
-                    <p style="color: var(--text-muted); margin-bottom
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 2 of 4: Structural Scale</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Headcount / Group Size</label>
+                            <select id="inputGroupSize">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5" selected>5+</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Who Are You With?</label>
+                            <select id="inputWith">
+                                <option value="Solo">Solo</option>
+                                <option value="Partner">Date</option>
+                                <option value="Friends">Friends</option>
+                                <option value="Family" selected>Family</option>
+                                <option value="Co-workers">Co-workers</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(1)">Back</button><button class="btn" onclick="goToStep(3)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep3" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 3 of 4: Logistics Filters</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Available Time Allotment (Hours)</label>
+                            <select id="inputTime">
+                                <option value="0.5">0.5</option>
+                                <option value="1">1</option>
+                                <option value="1.5">1.5</option>
+                                <option value="2">2</option>
+                                <option value="2.5" selected>2.5</option>
+                                <option value="3">3</option>
+                                <option value="3.5">3.5</option>
+                                <option value="4">4</option>
+                                <option value="4.5">4.5</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Maximum Budget Cap</label>
+                            <select id="inputBudget">
+                                <option value="0">Free</option>
+                                <option value="10">€10</option>
+                                <option value="20">€20</option>
+                                <option value="30">€30</option>
+                                <option value="40">€40</option>
+                                <option value="50">€50+</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(2)">Back</button><button class="btn" onclick="goToStep(4)">Next Screen</button></div>
+                </div>
+
+                <div id="qStep4" class="step-group">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 4 of 4: Spatial Boundaries</p>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>Environment Setting Preference</label>
+                            <select id="inputSetting">
+                                <option value="Indoor" selected>Indoor</option>
+                                <option value="Outdoor">Outdoor</option>
+                                <option value="Any">Either</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Maximum Displacement Radius</label>
+                            <select id="inputRadius">
+                                <option value="0">0 km</option>
+                                <option value="5">5 km</option>
+                                <option value="10">10 km</option>
+                                <option value="15">15 km</option>
+                                <option value="20">20 km</option>
+                                <option value="25" selected>25 km</option>
+                                <option value="30">30+ km</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-nav-group"><button class="btn-sec" onclick="goToStep(3)">Back</button><button class="btn" onclick="processEngineRun()">Generate Recommendations</button></div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="resultsView" class="view-section">
+            <h2 id="resultsHeader" style="font-size: 2.8rem; margin-bottom: 1.5rem;">Tailored Recommendations Matrix</h2>
+            <div id="outputDeck" class="recs-deck"></div>
+        </section>
+
+    </div>
+
+    <script>
+        let savedFavorites = [];
+
+        const activityDatabase = {
+            "0": { 
+                "Solo": {
+                    "Relaxing": [{name: "Mindful Meditation & Reading Session", cat: "Home Relaxation", desc: "Unwind at home with a book or simple relaxation exercises."}],
+                    "Creative": [{name: "Solo Watercolor or Sketching Session", cat: "At-Home Art", desc: "Express yourself creatively right at your own desk."}],
+                    "Productive": [{name: "Digital Workspace Optimization", cat: "Organization", desc: "Declutter files, plan your week, or optimize your workflow templates."}]
+                },
+                "Family": {
+                    "Social": [{name: "Classic Family Board & Card Game Night", cat: "Home Game", desc: "Gather everyone in the living room for classic competitive tabletop games."}],
+                    "Creative": [{name: "Family Baking Blueprint", cat: "Home Kitchen", desc: "Pick an advanced new pastry recipe and bake it together as a team."}],
+                    "Relaxing": [{name: "Cozy Living Room Movie Marathon", cat: "Home Theater", desc: "Dim the lights and set up your favorite film series with custom treats."}]
+                },
+                "Friends": {
+                    "Social": [{name: "Interactive Living Room Trivia Contest", cat: "Home Party", desc: "Build or open a competitive quiz night right from your living room sofa."}],
+                    "Adventure": [{name: "Cooperative Party Video Game Challenge", cat: "Gaming Lounge", desc: "Fire up multiplayer modules or team challenges directly on the console."}]
+                },
+                "Partner": {
+                    "Romantic": [{name: "Candlelit Home Cooked Dinner", cat: "Date Night", desc: "Design a menu, put on a mellow soundtrack, and cook a meal together."}],
+                    "Relaxing": [{name: "At-Home Spa Night Ritual", cat: "Relaxation", desc: "Set up aromatherapy, put on soothing soundscapes, and enjoy masks or massages."}]
+                },
+                "Co-workers": {
+                    "Productive": [{name: "Remote Team Brainstorming Session", cat: "Collaboration", desc: "Gather online or over coffee at the desk to chart milestones and new goals."}]
+                }
+            },
+            "outdoors": { 
+                "Adventure": [
+                    {name: "Rock Climbing Facility Tour", cat: "Adventure Sport", desc: "Test your skill on varying physical layout courses nearby."},
+                    {name: "Scenic Kayaking Excursion", cat: "Water Discovery", desc: "Rent equipment and hit local active waterways or coastal routes."}
+                ],
+                "Relaxing": [
+                    {name: "Cozy Specialty Coffee Shop", cat: "Local Café", desc: "Find a quiet spot to read, sip specialty brews, and people-watch."},
+                    {name: "Day Spa and Wellness Escape", cat: "Relaxation Center", desc: "Book thermal treatment setups or a deep tissue body massage nearby."}
+                ],
+                "Creative": [
+                    {name: "Local Museum & Exhibition Crawl", cat: "Cultural Art", desc: "Browse artistic landmarks, structural historical designs, or regional art hubs."},
+                    {name: "Beginner's Artisan Pottery Class", cat: "Creative Workshop", desc: "Get hands-on instruction spinning raw clay into custom pieces."}
+                ],
+                "Social": [
+                    {name: "Bustling Local Bowling Alley", cat: "Fun Center", desc: "Rent a lane, challenge your companions, and order classic snack platters."},
+                    {name: "Group Escape Room Experience", cat: "Interactive Puzzle", desc: "Work together under tight constraints to solve cryptic local clues."}
+                ],
+                "Nature": [
+                    {name: "Scenic Hiking & Nature Trail Trails", cat: "Hiking Path", desc: "Head out to view stunning panoramic landscape lookouts and paths."},
+                    {name: "Regional Botanical Garden Tour", cat: "Eco Exploration", desc: "Walk through curated local plant environments and outdoor paths."}
+                ],
+                "Romantic": [
+                    {name: "Panoramic Sunset Viewpoint Drive", cat: "Romantic Walk", desc: "Travel out to an elevated scenic spot to watch the sun go down together."},
+                    {name: "Premium Fine Dining Outing", cat: "Candlelit Dinner", desc: "Reserve an intimate table at a top-rated, atmosphere-heavy venue."}
+                ],
+                "Productive": [
+                    {name: "Quiet Co-working Lounge Hub", cat: "Study Space", desc: "Find a quiet location tailored for planning budgets or skill-learning."},
+                    {name: "Community Tree-Planting Volunteer Shift", cat: "Public Progress", desc: "Get out and make meaningful headway on municipal green developments."}
+                ],
+                "Nightlife": [
+                    {name: "Local Live Music Concert Hall", cat: "Night Concert", desc: "Catch live regional musical acts or vibrant performance showcases."},
+                    {name: "Open-Air Evening Night Market", cat: "Night Market", desc: "Stroll beneath hanging lamps while checking out local crafts and unique food stalls."}
+                ]
+            }
+        };
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+        }
+
+        function resetToHome() {
+            document.body.style.background = "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #2e1065 100%)";
+            showView('homeView');
+        }
+
+        function goToStep(stepNum) {
+            document.querySelectorAll('.step-group').forEach(s => s.classList.remove('active-step'));
+            document.getElementById(`qStep${stepNum}`).classList.add('active-step');
+        }
+
+        function mutateThemeWorkspace(mood) {
+            const palettes = {
+                "Adventure": "linear-gradient(135deg, #111827 0%, #ea580c 100%)",
+                "Relaxing": "linear-gradient(135deg, #0f172a 0%, #2563eb 100%)",
+                "Creative": "linear-gradient(135deg, #111827 0%, #7c3aed 100%)",
+                "Social": "linear-gradient(135deg, #0f172a 0%, #d97706 100%)",
+                "Nature": "linear-gradient(135deg, #0b0f19 0%, #059669 100%)",
+                "Romantic": "linear-gradient(135deg, #111827 0%, #db2777 100%)",
+                "Productive": "linear-gradient(135deg, #0f172a 0%, #0d9488 100%)",
+                "Nightlife": "linear-gradient(135deg, #090514 0%, #4c1d95 100%)"
+            };
+            document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%)";
+        }
+
+        function processEngineRun() {
+            const mood = document.getElementById('inputMood').value;
+            const energy = document.getElementById('inputEnergy').value;
+            const withWho = document.getElementById('inputWith').value;
+            const setting = document.getElementById('inputSetting').value;
+            const radius = document.getElementById('inputRadius').value;
+
+            mutateThemeWorkspace(mood);
+
+            let matches = [];
+
+            if (radius === "0" || (setting === "Indoor" && radius === "0")) {
+                const companionPool = activityDatabase["0"][withWho] || activityDatabase["0"]["Solo"];
+                matches = companionPool[mood] || companionPool[Object.keys(companionPool)[0]];
+            } else {
+                matches = activityDatabase["outdoors"][mood] || activityDatabase["outdoors"]["Social"];
+            }
+
+            let finalSelection = [];
+            matches.forEach(item => {
+                finalSelection.push({
+                    name: item.name,
+                    cat: item.cat,
+                    desc: item.desc
+                });
+            });
+
+            if(finalSelection.length === 0) {
+                finalSelection.push({
+                    name: `Custom ${mood} Profile Activity`,
+                    cat: "Tailored Match",
+                    desc: `An activity matching your exact filter parameters.`
+                });
+            }
+
+            document.getElementById('resultsHeader').innerText = `Your Tailored Suggestions Matrix`;
+            renderDeckCollection(finalSelection, radius);
+            showView('resultsView');
+        }
+
+        function renderDeckCollection(list, radius) {
+            const container = document.getElementById('outputDeck');
+            container.innerHTML = "";
+
+            list.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = "rec-card";
+                
+                const mapQuery = encodeURIComponent(item.name);
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+                const calText = encodeURIComponent(`UpNext: ${item.name}`);
+                const calDetails = encodeURIComponent(`Personalized Activity Match: ${item.desc}`);
+                const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${calText}&details=${calDetails}&sf=true&output=xml`;
+
+                const actionButtonHtml = radius === "0" ? 
+                    `<span class="btn-sec">🏡 At-Home Base</span>` : 
+                    `<a href="${mapsUrl}" target="_blank" class="btn-maps">Get Me There</a>`;
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <span class="rating-badge">★ Verified Match</span>
+                        </div>
+                        <h3>${item.name}</h3>
+                        <p style="font-size:1.2rem; color:var(--text-muted); margin-bottom: 0.5rem;">Category: ${item.cat} • Sync Ready</p>
+                        <p style="font-size:1.1rem; color:#60a5fa; font-weight:500;">${item.desc}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
+                        <a href="${googleCalendarUrl}" target="_blank" class="btn-sec" style="text-decoration:none; display:inline-flex; align-items:center;">📅 Schedule</a>
+                        ${actionButtonHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addFav(name) {
+            if(!savedFavorites.includes(name)) {
+                savedFavorites.push(name);
+                const list = document.getElementById('favoritesList');
+                if(savedFavorites.length === 1) list.innerHTML = "";
+                
+                const li = document.createElement('li');
+                const mapQuery = encodeURIComponent(name);
+                
+                li.innerHTML = `
+                    <a class="favorite-anchor" href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank">
+                        ⭐ ${name} <span style="float:right; font-size:0.9rem; opacity:0.7;">📍 View Map ➔</span>
+                    </a>
+                `;
+                list.appendChild(li);
+            }
+        }
+    </script>
+</body>
+</html>
