@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UpNext — Your Personal Activity Assistant</title>
+    <title>UpNext — Your Smart Activity Assistant</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #2e1065 100%);
@@ -212,13 +212,14 @@
             margin: 0.5rem 0;
         }
 
-        .rating-badge {
-            background: rgba(250, 204, 21, 0.2);
-            color: #facc15;
+        .ai-badge {
+            background: rgba(99, 102, 241, 0.25);
+            color: #a5b4fc;
             padding: 0.4rem 1rem;
             border-radius: 8px;
             font-size: 1.1rem;
             font-weight: bold;
+            border: 1px solid rgba(99, 102, 241, 0.4);
         }
 
         .card-actions {
@@ -299,7 +300,7 @@
 
     <header>
         <div class="logo" onclick="resetToHome()">UpNext</div>
-        <div style="font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">Activity Engine</div>
+        <div style="font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">Adaptive AI Engine</div>
     </header>
 
     <div class="container">
@@ -308,7 +309,7 @@
             <div class="welcome-hero">
                 <h1>Stop Scrolling. Start Exploring.</h1>
                 <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.6; font-size: 1.4rem;">
-                    UpNext eliminates endless decision paralysis. Get verified, immediate, and completely customized choices configured to match your exact vibe parameters.
+                    UpNext eliminates endless decision paralysis. Powered by a local heuristic AI model that learns from your preferences automatically.
                 </p>
                 <button class="btn btn-large" onclick="showView('questionnaireView')">Start Questionnaire</button>
             </div>
@@ -354,7 +355,7 @@
                             <select id="inputEnergy">
                                 <option value="Low">Low</option>
                                 <option value="Medium">Medium</option>
-                                <option value="Very High" selected>Very High</option>
+                                <option value="High" selected>High</option>
                             </select>
                         </div>
                     </div>
@@ -367,11 +368,9 @@
                         <div class="form-item">
                             <label>Headcount / Group Size</label>
                             <select id="inputGroupSize">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5" selected>5+</option>
+                                <option value="Solo">Solo</option>
+                                <option value="Small">2-4 People</option>
+                                <option value="Large" selected>5+ People</option>
                             </select>
                         </div>
                         <div class="form-item">
@@ -381,7 +380,6 @@
                                 <option value="Partner">Date</option>
                                 <option value="Friends">Friends</option>
                                 <option value="Family" selected>Family</option>
-                                <option value="Co-workers">Co-workers</option>
                             </select>
                         </div>
                     </div>
@@ -392,29 +390,17 @@
                     <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 1.3rem;">Screen 3 of 4: Logistics Filters</p>
                     <div class="form-grid">
                         <div class="form-item">
-                            <label>Available Time Allotment (Hours)</label>
+                            <label>Available Time Allotment</label>
                             <select id="inputTime">
-                                <option value="0.5">0.5</option>
-                                <option value="1">1</option>
-                                <option value="1.5">1.5</option>
-                                <option value="2">2</option>
-                                <option value="2.5" selected>2.5</option>
-                                <option value="3">3</option>
-                                <option value="3.5">3.5</option>
-                                <option value="4">4</option>
-                                <option value="4.5">4.5</option>
-                                <option value="5">5+</option>
+                                <option value="Short">Short (&lt; 1.5 hrs)</option>
+                                <option value="Long" selected>Long (2+ hrs)</option>
                             </select>
                         </div>
                         <div class="form-item">
                             <label>Maximum Budget Cap</label>
                             <select id="inputBudget">
-                                <option value="0">Free</option>
-                                <option value="10">€10</option>
-                                <option value="20">€20</option>
-                                <option value="30">€30</option>
-                                <option value="40">€40</option>
-                                <option value="50">€50+</option>
+                                <option value="Free">Free</option>
+                                <option value="Paid" selected>Paid</option>
                             </select>
                         </div>
                     </div>
@@ -429,19 +415,13 @@
                             <select id="inputSetting">
                                 <option value="Indoor" selected>Indoor</option>
                                 <option value="Outdoor">Outdoor</option>
-                                <option value="Any">Either</option>
                             </select>
                         </div>
                         <div class="form-item">
                             <label>Maximum Displacement Radius</label>
                             <select id="inputRadius">
-                                <option value="0">0 km</option>
-                                <option value="5">5 km</option>
-                                <option value="10">10 km</option>
-                                <option value="15">15 km</option>
-                                <option value="20">20 km</option>
-                                <option value="25" selected>25 km</option>
-                                <option value="30">30+ km</option>
+                                <option value="0">0 km (At Home)</option>
+                                <option value="Local" selected>Out and About</option>
                             </select>
                         </div>
                     </div>
@@ -453,7 +433,7 @@
 
 
         <section id="resultsView" class="view-section">
-            <h2 id="resultsHeader" style="font-size: 2.8rem; margin-bottom: 1.5rem;">Tailored Recommendations Matrix</h2>
+            <h2 id="resultsHeader" style="font-size: 2.8rem; margin-bottom: 1.5rem;">AI Optimized Recommendation Matrix</h2>
             <div id="outputDeck" class="recs-deck"></div>
         </section>
 
@@ -461,35 +441,36 @@
 
     <script>
         let savedFavorites = [];
-        let dislikedActivities = [];
+        let blacklistedItems = [];
+        let penalizedCategories = {}; // AI memory object tracking disliked categories
 
-        // ENHANCED DATABASE TO GUARANTEE 10 UNIQUE SUGGESTIONS PER MASSIVE CATEGORY SPLIT
-        const activityDatabase = {
-            "0": [
-                {name: "Classic Family Board & Card Game Night", cat: "Home Interactive", desc: "Gather everyone around for intense structural tabletop rounds."},
-                {name: "Interactive Living Room Trivia Contest", cat: "Home Interactive", desc: "Host a fast-paced custom trivia game using smartphone buzzers."},
-                {name: "Family Baking Blueprint", cat: "Home Creative", desc: "Pick a challenging pastry recipe from scratch and bake it as a unit."},
-                {name: "Cozy Living Room Movie Marathon", cat: "Home Lounge", desc: "Line up classic film chapters with specialty popcorn layers."},
-                {name: "DIY Painting & Masterpiece Workshop", cat: "Home Creative", desc: "Get canvases out and challenge everyone to paint a shared landscape."},
-                {name: "Indoor Obstacle Course Challenge", cat: "Home Action", desc: "Build a funny step course across floor markers and pillows safely."},
-                {name: "Family Heritage Story Sharing Session", cat: "Home Social", desc: "Bring print albums out and discuss old memories and historical trees."},
-                {name: "Improv Acting & Charades Tourney", cat: "Home Social", desc: "Act out funny prompts against a strict kitchen timer countdown."},
-                {name: "Acoustic Singalong & Vinyl Listening", cat: "Home Lounge", desc: "Play deep cut classic tracks on the turntable and rate the lyrics."},
-                {name: "Stop-Motion Clay Animation Project", cat: "Home Creative", desc: "Construct figures and animate a 10-second smartphone cinematic masterpiece."}
-            ],
-            "outdoors": [
-                {name: "Rock Climbing Facility Tour", cat: "Adventure Sport", desc: "Test structural climbing holds on a high-grade indoor bouldering facility."},
-                {name: "Scenic Kayaking Excursion", cat: "Water Discovery", desc: "Rent heavy tandem row equipment and tackle nearby active water routes."},
-                {name: "Cozy Specialty Coffee Shop", cat: "Local Leisure", desc: "Discover a premium roasting room to try complex artisan cold brews."},
-                {name: "Day Spa and Wellness Escape", cat: "Relaxation Center", desc: "Unplug completely with thermal pool access and deep muscle massages."},
-                {name: "Local Museum & Exhibition Crawl", cat: "Cultural Discovery", desc: "Browse artistic landmarks and deep historical regional artifacts."},
-                {name: "Beginner's Artisan Pottery Class", cat: "Creative Workshop", desc: "Throw wet clay onto spin wheels to construct unique custom mugs."},
-                {name: "Bustling Local Bowling Alley", cat: "Social Center", desc: "Lace up classic bowling shoes and aim for high strikes down slick lanes."},
-                {name: "Group Escape Room Experience", cat: "Interactive Puzzle", desc: "Solve mechanical cipher modules hidden behind walls before time ends."},
-                {name: "Scenic Hiking & Nature Trail Trails", cat: "Eco Wilderness", desc: "Scale local high vantage points along heavily wooded dirt paths."},
-                {name: "Regional Botanical Garden Tour", cat: "Eco Wilderness", desc: "Walk down climate-controlled glass domes containing rare tropical vegetation."}
-            ]
-        };
+        // BROAD DATAPOOL PACKED WITH META-TAGS FOR SIMULATING MACHINE LEARNING WEIGHTS
+        const deepActivityPool = [
+            {name: "Classic Family Board & Card Game Night", cat: "Gaming", env: "Indoor", energy: "Medium", size: "Large", budget: "Free", desc: "Gather everyone around for intense structural tabletop rounds."},
+            {name: "Interactive Living Room Trivia Contest", cat: "Gaming", env: "Indoor", energy: "High", size: "Large", budget: "Free", desc: "Host a fast-paced custom trivia game using smartphone setups."},
+            {name: "Family Baking Blueprint Challenge", cat: "Culinary", env: "Indoor", energy: "Medium", size: "Large", budget: "Paid", desc: "Pick a challenging pastry recipe from scratch and bake it as a unit."},
+            {name: "Cozy Living Room Movie Marathon", cat: "Media", env: "Indoor", energy: "Low", size: "Large", budget: "Free", desc: "Line up classic film chapters with specialty popcorn layers."},
+            {name: "DIY Painting & Masterpiece Workshop", cat: "Art", env: "Indoor", energy: "Low", size: "Large", budget: "Paid", desc: "Get canvases out and challenge everyone to paint a shared landscape."},
+            {name: "Indoor Obstacle Course Challenge", cat: "Active", env: "Indoor", energy: "High", size: "Large", budget: "Free", desc: "Build a funny step course across floor markers and pillows safely."},
+            {name: "Family Heritage Story Sharing Session", cat: "Social", env: "Indoor", energy: "Low", size: "Large", budget: "Free", desc: "Bring print albums out and discuss old memories and family histories."},
+            {name: "Improv Acting & Charades Tourney", cat: "Social", env: "Indoor", energy: "High", size: "Large", budget: "Free", desc: "Act out funny prompts against a strict kitchen timer countdown."},
+            {name: "Acoustic Singalong & Vinyl Listening", cat: "Media", env: "Indoor", energy: "Low", size: "Large", budget: "Free", desc: "Play deep cut classic tracks on the turntable and rate the lyrics."},
+            {name: "Stop-Motion Clay Animation Project", cat: "Art", env: "Indoor", energy: "Medium", size: "Large", budget: "Paid", desc: "Construct figures and animate a 10-second smartphone cinematic masterpiece."},
+            {name: "Rock Climbing Facility Tour", cat: "Active", env: "Indoor", energy: "High", size: "Small", budget: "Paid", desc: "Test structural climbing holds on a high-grade indoor bouldering facility."},
+            {name: "Scenic Kayaking Excursion", cat: "Active", env: "Outdoor", energy: "High", size: "Small", budget: "Paid", desc: "Rent heavy tandem row equipment and tackle nearby active water routes."},
+            {name: "Cozy Specialty Coffee Shop Escape", cat: "Culinary", env: "Indoor", energy: "Low", size: "Solo", budget: "Paid", desc: "Discover a premium roasting room to try complex artisan cold brews."},
+            {name: "Day Spa and Wellness Retreat", cat: "Relaxation", env: "Indoor", energy: "Low", size: "Solo", budget: "Paid", desc: "Unplug completely with thermal pool access and deep muscle massages."},
+            {name: "Local Museum & Exhibition Crawl", cat: "Art", env: "Indoor", energy: "Low", size: "Small", budget: "Paid", desc: "Browse artistic landmarks and deep historical regional artifacts."},
+            {name: "Beginner's Artisan Pottery Class", cat: "Art", env: "Indoor", energy: "Medium", size: "Small", budget: "Paid", desc: "Throw wet clay onto spin wheels to construct unique custom mugs."},
+            {name: "Bustling Local Bowling Alley Alley", cat: "Gaming", env: "Indoor", energy: "Medium", size: "Large", budget: "Paid", desc: "Lace up classic bowling shoes and aim for high strikes down slick lanes."},
+            {name: "Group Escape Room Experience", cat: "Gaming", env: "Indoor", energy: "High", size: "Small", budget: "Paid", desc: "Solve mechanical cipher modules hidden behind walls before time ends."},
+            {name: "Scenic Hiking & Nature Trails", cat: "Active", env: "Outdoor", energy: "High", size: "Small", budget: "Free", desc: "Scale local high vantage points along heavily wooded dirt paths."},
+            {name: "Regional Botanical Garden Tour", cat: "Relaxation", env: "Outdoor", energy: "Low", size: "Small", budget: "Paid", desc: "Walk down climate-controlled glass domes containing rare tropical vegetation."},
+            {name: "Retro Arcade Token Tournament", cat: "Gaming", env: "Indoor", energy: "High", size: "Small", budget: "Paid", desc: "Compete across classic pinball tables and legendary fighting game rigs."},
+            {name: "Laser Tag Neon Battleground", cat: "Active", env: "Indoor", energy: "High", size: "Large", budget: "Paid", desc: "Gear up with infrared vests and out-maneuver teams in foggy neon arenas."},
+            {name: "Street Food Truck Crawl", cat: "Culinary", env: "Outdoor", energy: "Medium", size: "Small", budget: "Paid", desc: "Tour the highest-rated local open-air culinary pop-ups around town."},
+            {name: "Local Library Research Deep-Dive", cat: "Social", env: "Indoor", energy: "Low", size: "Solo", budget: "Free", desc: "Unearth vintage blueprints, town journals, and historical microfiche archives."}
+        ];
 
         function showView(viewId) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
@@ -520,38 +501,57 @@
             document.body.style.background = palettes[mood] || "linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%)";
         }
 
+        // SMART HEURISTIC RECOMMENDATION HEAVY ENGINE RUNNER
         function processEngineRun() {
             const mood = document.getElementById('inputMood').value;
-            const radius = document.getElementById('inputRadius').value;
+            const energy = document.getElementById('inputEnergy').value;
+            const size = document.getElementById('inputGroupSize').value;
+            const budget = document.getElementById('inputBudget').value;
             const setting = document.getElementById('inputSetting').value;
+            const radius = document.getElementById('inputRadius').value;
 
             mutateThemeWorkspace(mood);
 
-            let rawPool = [];
-            if (radius === "0" || (setting === "Indoor" && radius === "0")) {
-                rawPool = [...activityDatabase["0"]];
-            } else {
-                rawPool = [...activityDatabase["outdoors"]];
-            }
+            // AI SCORING LOOP MATCH MECHANISM
+            let scoredItems = deepActivityPool.map(item => {
+                let score = 100; // Base baseline score probability anchor
 
-            // Machine memory application: Filters out everything matching our negative blacklist array
-            let filteredList = rawPool.filter(item => !dislikedActivities.includes(item.name));
+                // Filter 1: Hard removal of completely blocked explicit items
+                if (blacklistedItems.includes(item.name)) return { item, score: -9999 };
 
-            // Dynamically generates artificial fallbacks if user clicks Dislike repeatedly on all choices
-            while (filteredList.length < 10) {
-                let uniqueID = filteredList.length + 1;
-                filteredList.push({
-                    name: `Alternative ${mood} Plan #${uniqueID}`,
-                    cat: `${mood} Exploration`,
-                    desc: "An alternative concept automatically calculated by learning from your active dislikes."
+                // Heuristic weight adjusters:
+                if (item.env === setting) score += 30;
+                if (item.energy === energy) score += 25;
+                if (item.size === size) score += 20;
+                if (item.budget === budget) score += 15;
+                if (radius === "0" && item.env !== "Indoor") score -= 50;
+
+                // MACHINE LEARNING WEIGHT PENALTY: Knocks down total likelihood score if group profile matches a previous negative event
+                if (penalizedCategories[item.cat]) {
+                    score -= (penalizedCategories[item.cat] * 40); 
+                }
+
+                return { item, score };
+            });
+
+            // Re-orders recommendations based on AI score compatibility matrices
+            scoredItems.sort((a, b) => b.score - a.score);
+
+            // Extraction of exactly 10 high-value targets
+            let finalTen = scoredItems.slice(0, 10).map(si => si.item);
+
+            // Safety net data expander if data pool matches drop low due to user down-voting everything
+            while (finalTen.length < 10) {
+                let id = finalTen.length + 1;
+                finalTen.push({
+                    name: `AI Generated Alternative Plan #${id}`,
+                    cat: "Synthetic Match",
+                    desc: "An adaptive backup activity formulated automatically to maintain data balance requirements."
                 });
             }
 
-            // Hard constraint to deliver exactly 10 cards as requested
-            let exactTenList = filteredList.slice(0, 10);
-
-            document.getElementById('resultsHeader').innerText = `Your 10 Custom Suggestions Matrices`;
-            renderDeckCollection(exactTenList, radius);
+            document.getElementById('resultsHeader').innerText = `Your Top 10 High-Confidence AI Matches`;
+            renderDeckCollection(finalTen, radius);
             showView('resultsView');
         }
 
@@ -577,14 +577,14 @@
                 card.innerHTML = `
                     <div>
                         <div style="display:flex; gap:1rem; align-items:center;">
-                            <span class="rating-badge">★ Recommended Choice</span>
+                            <span class="ai-badge">🤖 Match Strength Dynamic</span>
                         </div>
                         <h3>${item.name}</h3>
-                        <p style="font-size:1.2rem; color:var(--text-muted); margin-bottom: 0.5rem;">Category: ${item.cat} • Adaptive Sync</p>
+                        <p style="font-size:1.2rem; color:var(--text-muted); margin-bottom: 0.5rem;">Category: ${item.cat} • Machine Learning Node Active</p>
                         <p style="font-size:1.1rem; color:#60a5fa; font-weight:500;">${item.desc}</p>
                     </div>
                     <div class="card-actions">
-                        <button class="btn-dislike" onclick="registerDislike('${item.name}')">👎 Don't Like It</button>
+                        <button class="btn-dislike" onclick="trainModelDislike('${item.name}', '${item.cat}')">👎 Don't Like It</button>
                         <button class="btn-sec" onclick="addFav('${item.name}')">❤️ Favorite</button>
                         <a href="${googleCalendarUrl}" target="_blank" class="btn-sec" style="text-decoration:none; display:inline-flex; align-items:center;">📅 Schedule</a>
                         ${actionButtonHtml}
@@ -594,12 +594,21 @@
             });
         }
 
-        function registerDislike(name) {
-            // Memory storage expands: records the mistake
-            if (!dislikedActivities.includes(name)) {
-                dislikedActivities.push(name);
+        // THE LEARNING AGENT LOOP LOGIC
+        function trainModelDislike(name, category) {
+            // Log explicitly blocked entity
+            if (!blacklistedItems.includes(name)) {
+                blacklistedItems.push(name);
             }
-            // Real-time engine learning loop: instantly morphs the interface with a corrected 10-count stack
+            
+            // Train system weights against entire similarity clusters (Categories)
+            if (!penalizedCategories[category]) {
+                penalizedCategories[category] = 1;
+            } else {
+                penalizedCategories[category]++; // Increases training weight penalty over time
+            }
+
+            // Instantly recalculates the database and re-scores options live on-screen
             processEngineRun();
         }
 
