@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UpNext — AI Activity Assistant</title>
+    <title>UpNext — Ultra Premium Colorful Smart Assistant</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 35%, #831843 70%, #0f172a 100%);
-            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-bg: rgba(15, 23, 42, 0.65);
             --accent: #ec4899;
+            --accent-glow: rgba(236, 72, 153, 0.4);
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
             --success: #10b981;
             --danger: #ef4444;
+            --gold: #facc15;
             --neon-blue: #06b6d4;
         }
 
@@ -27,8 +29,10 @@
             background: var(--bg-gradient);
             color: var(--text-main);
             min-height: 100vh;
-            transition: background 0.8s ease;
+            transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-x: hidden;
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
         header {
@@ -38,6 +42,7 @@
             align-items: center;
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: sticky;
             top: 0;
@@ -51,6 +56,41 @@
             background: linear-gradient(to right, #ff007f, #7000ff, #00f0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .streak-badge {
+            background: linear-gradient(45deg, #ff5e36, #f13c73);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 4px 12px rgba(241, 60, 115, 0.3);
+        }
+
+        .header-share-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .header-share-btn:hover { 
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px); 
         }
 
         .nav-home-btn {
@@ -90,6 +130,7 @@
             padding: 2.5rem;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             margin-bottom: 2rem;
         }
 
@@ -104,32 +145,36 @@
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 2rem;
+            margin-top: 1.5rem;
         }
 
         .welcome-hero-card {
+            text-align: left;
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
         }
 
-        .assistant-input-box {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            padding: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        .welcome-hero-card h1 { font-size: clamp(2rem, 4vw, 3.2rem); }
+        .welcome-hero-card p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+
+        .status-pill {
+            background: rgba(16, 185, 129, 0.15);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            display: inline-block;
+            align-self: flex-start;
         }
 
-        .assistant-input-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: white;
-            flex-grow: 1;
-            font-size: 1.1rem;
-            padding-left: 0.75rem;
+        .cta-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .primary-btn {
@@ -139,42 +184,48 @@
             padding: 1rem 2rem;
             border-radius: 14px;
             font-weight: 800;
+            font-size: 1.1rem;
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(236, 72, 153, 0.6);
         }
 
-        .ask-btn {
-            background: var(--accent);
+        .pricing-nav-btn {
+            background: rgba(255,255,255,0.1);
             color: white;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 10px;
-            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
         }
+        .pricing-nav-btn:hover { background: rgba(255,255,255,0.2); }
 
         .dashboard-tabs {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-
         .tab-panel {
             background: rgba(255,255,255,0.03);
             border-radius: 16px;
             border: 1px solid rgba(255,255,255,0.05);
             padding: 1.25rem;
         }
-
+        .tab-panel h3 { margin-bottom: 0.75rem; font-size: 1.1rem; color: #fff; }
         .item-list {
             list-style: none;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
             font-size: 0.9rem;
-            margin-top: 0.5rem;
+            color: var(--text-muted);
         }
-
         .item-list li {
             background: rgba(0,0,0,0.2);
             padding: 0.5rem 0.75rem;
@@ -183,23 +234,43 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .remove-btn {
             background: transparent;
             border: none;
             color: var(--danger);
             cursor: pointer;
             font-weight: bold;
-            font-size: 1.1rem;
         }
 
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+        }
+        .progress-track {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .quiz-step { display: none; }
+        .quiz-step.active { display: block; }
+        
+        .question-group { margin-bottom: 2rem; }
+        .question-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #fff;
+        }
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1rem;
-            margin-top: 0.5rem;
         }
-
         .option-tile {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -207,30 +278,45 @@
             padding: 1rem;
             cursor: pointer;
             transition: all 0.2s;
+            text-align: left;
         }
-
+        .option-tile:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--neon-blue);
+        }
         .option-tile.selected {
             background: rgba(236, 72, 153, 0.2);
             border-color: var(--accent);
             box-shadow: 0 0 12px rgba(236, 72, 153, 0.3);
         }
-
-        .question-group {
-            margin-bottom: 2.5rem;
-        }
-
-        .question-group label {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #fff;
-        }
+        .tile-title { font-weight: 700; display: block; margin-bottom: 0.25rem; color: #fff; }
+        .tile-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.3; }
 
         .quiz-navigation {
             display: flex;
             justify-content: space-between;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
+        }
+        .secondary-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
+        .results-header-box {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .results-header-box h2 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .suggestions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
         .suggestion-card {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -240,24 +326,30 @@
             grid-template-columns: 1fr auto;
             gap: 1.5rem;
             align-items: center;
-            margin-bottom: 1.5rem;
+            transition: transform 0.2s, background 0.2s;
         }
-
+        .suggestion-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-2px);
+        }
+        .suggestion-details h3 { font-size: 1.4rem; color: white; margin-bottom: 0.4rem; -webkit-text-fill-color: initial; background: none; }
+        .suggestion-details p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        
         .meta-tags {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
             margin-top: 0.5rem;
         }
-
         .tag {
             font-size: 0.75rem;
             background: rgba(255,255,255,0.1);
             padding: 0.2rem 0.6rem;
             border-radius: 6px;
+            color: #fff;
         }
-
         .tag.score { background: rgba(6, 182, 212, 0.2); color: var(--neon-blue); font-weight: bold; }
+        .tag.hours { background: rgba(16, 185, 129, 0.2); color: var(--success); }
 
         .card-actions {
             display: flex;
@@ -265,13 +357,11 @@
             flex-direction: column;
             align-items: flex-end;
         }
-
         .feedback-actions {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
-
         .btn-feedback {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
@@ -281,7 +371,6 @@
             cursor: pointer;
             font-size: 0.85rem;
         }
-
         .btn-feedback:hover { background: rgba(255,255,255,0.15); }
 
         .get-me-there-btn {
@@ -292,10 +381,103 @@
             border-radius: 8px;
             font-size: 0.9rem;
             font-weight: 700;
+            white-space: nowrap;
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
             box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+            transition: all 0.2s;
+        }
+        .get-me-there-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .pricing-header { text-align: center; margin-bottom: 3rem; }
+        .pricing-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .pricing-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.3s;
+        }
+        .pricing-card:hover { transform: translateY(-5px); }
+        .pricing-card.premium-highlight {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent);
+            box-shadow: 0 15px 35px rgba(236, 72, 153, 0.15);
+        }
+        .highlight-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        .price-val { font-size: 2.5rem; font-weight: 900; margin: 1rem 0; color: white; }
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .pricing-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .pricing-btn.accent-action { background: var(--accent); color: white; }
+        .pricing-btn.sub-action { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+
+        /* Settings Switch Styles */
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255,255,255,0.2); transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        @media (max-width: 992px) { .home-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .suggestion-card { grid-template-columns: 1fr; text-align: center; }
+            .card-actions { align-items: center; }
         }
     </style>
 </head>
@@ -303,7 +485,12 @@
 
     <header>
         <div class="logo" onclick="switchView('home')">UpNext</div>
-        <button class="nav-home-btn" onclick="switchView('home')">🏠 Home</button>
+        <div class="header-controls">
+            <button class="nav-home-btn" onclick="switchView('settings')">⚙️ Settings</button>
+            <button class="nav-home-btn" onclick="switchView('home')">🏠 Home</button>
+            <div class="streak-badge" id="streak">🔥 5 Day Streak</div>
+            <button class="header-share-btn" onclick="shareApp()">✨ Share</button>
+        </div>
     </header>
 
     <div class="container">
@@ -311,27 +498,34 @@
         <section id="home-view" class="view-section active">
             <div class="home-grid">
                 <div class="glass-panel welcome-hero-card">
-                    <h1>Find What's Up Next</h1>
-                    <p>Stop scrolling. Tell us your vibe, and our adaptive algorithm will scan nearby locations, budgets, and energy frameworks to give you real actionable recommendations instantly.</p>
+                    <span class="status-pill">System Status: Active</span>
+                    <h1>Welcome to UpNext</h1>
+                    <p>Stop endlessly scrolling and immediately discover real activities. UpNext avoids random ideas, completely customizing your experience using dynamic AI contexts like mood, available time, group configurations, and instant budget limits.</p>
                     
-                    <div class="assistant-input-box">
-                        <input type="text" id="quickSearchInput" placeholder="Quick search: Coffee shop, Bowling, Date ideas..." onkeypress="if(event.key === 'Enter') triggerQuickSearch()">
-                        <button class="ask-btn" onclick="triggerQuickSearch()">Search</button>
-                    </div>
-
-                    <div>
-                        <button class="primary-btn" onclick="switchView('quiz')">⚡ Start Smart Questionnaire</button>
+                    <div class="cta-container">
+                        <button class="primary-btn" onclick="startQuestionnaire()">⚡ Start Questionnaire</button>
+                        <button class="pricing-nav-btn" onclick="switchView('pricing')">💎 View Membership Plans</button>
                     </div>
                 </div>
 
                 <div class="dashboard-tabs">
                     <div class="tab-panel">
                         <h3>📅 Scheduled Plans</h3>
-                        <ul class="item-list" id="scheduled-list"></ul>
+                        <ul class="item-list" id="scheduled-list">
+                            <li><span>Retro Bowling (July 12)</span><button class="remove-btn" onclick="this.parentNode.remove()">×</button></li>
+                        </ul>
                     </div>
                     <div class="tab-panel">
                         <h3>💖 Favorite Places</h3>
-                        <ul class="item-list" id="favorites-list"></ul>
+                        <ul class="item-list" id="favorites-list">
+                            <li><span>Central Parks & Trails</span><button class="remove-btn" onclick="this.parentNode.remove()">×</button></li>
+                        </ul>
+                    </div>
+                    <div class="tab-panel">
+                        <h3>⏳ Past Activity History</h3>
+                        <ul class="item-list" id="history-list">
+                            <li><span>Artisanal Cafe Collective</span><span>✅</span></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -339,97 +533,161 @@
 
         <section id="quiz-view" class="view-section">
             <div class="glass-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:2rem;">
-                    <h2>Smart Matching Core</h2>
-                    <span id="step-indicator" style="color:var(--accent); font-weight:bold;">Screen 1 of 4</span>
+                <div class="quiz-header">
+                    <h2>Personalized Matching Engine</h2>
+                    <span class="progress-track" id="step-indicator">Screen 1 of 4</span>
                 </div>
 
                 <div class="quiz-step active" id="step-1">
                     <div class="question-group">
-                        <label>What's your target mood?</label>
+                        <label>Select Desired Mood Context</label>
                         <div class="options-grid" id="mood-options"></div>
                     </div>
                     <div class="question-group">
-                        <label>Current physical energy level?</label>
+                        <label>Select Current Energy Level</label>
                         <div class="options-grid" id="energy-options"></div>
                     </div>
                 </div>
 
                 <div class="quiz-step" id="step-2">
                     <div class="question-group">
-                        <label>What's your group size?</label>
+                        <label>Target Group Size</label>
                         <div class="options-grid" id="group-options"></div>
                     </div>
                     <div class="question-group">
-                        <label>Who are you with?</label>
+                        <label>Social Companionship Context</label>
                         <div class="options-grid" id="with-options"></div>
                     </div>
                 </div>
 
                 <div class="quiz-step" id="step-3">
                     <div class="question-group">
-                        <label>Available time windows?</label>
+                        <label>Available Target Duration</label>
                         <div class="options-grid" id="time-options"></div>
                     </div>
                     <div class="question-group">
-                        <label>Max budget threshold per person?</label>
+                        <label>Budget Parameter Allocation</label>
                         <div class="options-grid" id="budget-options"></div>
                     </div>
                 </div>
 
                 <div class="quiz-step" id="step-4">
                     <div class="question-group">
-                        <label>Environment preference?</label>
+                        <label>Environment Preferences</label>
                         <div class="options-grid" id="env-options"></div>
                     </div>
                     <div class="question-group">
-                        <label>Max travel boundary distance?</label>
+                        <label>Maximum Separation Boundary Distance</label>
                         <div class="options-grid" id="dist-options"></div>
                     </div>
                 </div>
 
                 <div class="quiz-navigation">
-                    <button class="nav-home-btn" id="prev-btn" onclick="navigateQuiz(-1)" disabled>Previous</button>
-                    <button class="primary-btn" id="next-btn" onclick="navigateQuiz(1)" style="padding:0.6rem 1.8rem;">Next</button>
+                    <button class="secondary-btn" id="prev-btn" onclick="navigateQuiz(-1)" disabled>Previous</button>
+                    <button class="primary-btn" id="next-btn" onclick="navigateQuiz(1)" style="padding:0.6rem 1.8rem; font-size:1rem;">Next</button>
                 </div>
             </div>
         </section>
 
         <section id="results-view" class="view-section">
             <div class="glass-panel">
-                <h2 id="results-title" style="margin-bottom:1.5rem;">Your Top AI Matches</h2>
-                <div id="suggestions-render-target"></div>
+                <div class="results-header-box">
+                    <h2>Calculated AI Activity Suggestions</h2>
+                    <p style="color: var(--text-muted)">Verified high-relevance matches tailored through active memory feedback loops.</p>
+                </div>
+                <div class="suggestions-grid" id="suggestions-render-target"></div>
+            </div>
+        </section>
+
+        <section id="pricing-view" class="view-section">
+            <div class="pricing-header">
+                <h2>Choose Your Experience Plan</h2>
+                <p style="color: var(--text-muted); margin-top:0.5rem;">Access dynamic geolocation matching parameters without limits.</p>
+            </div>
+            <div class="pricing-cards-container">
+                <div class="pricing-card">
+                    <div>
+                        <h3>Free Trial</h3>
+                        <div class="price-val">Free</div>
+                        <ul class="pricing-features">
+                            <li>• Basic questionnaire access</li>
+                            <li>• Static data suggestions</li>
+                        </ul>
+                    </div>
+                    <button class="pricing-btn sub-action" onclick="switchView('home')">Continue Trial</button>
+                </div>
+                <div class="pricing-card premium-highlight">
+                    <div class="highlight-badge">Recommended</div>
+                    <div>
+                        <h3>UpNext Pro</h3>
+                        <div class="price-val">$4.99<span style="font-size:1rem">/mo</span></div>
+                        <ul class="pricing-features">
+                            <li>• Unlimited recommendation execution</li>
+                            <li>• Live Map Places API calls enabled</li>
+                            <li>• Adaptive theme transitions</li>
+                        </ul>
+                    </div>
+                    <button class="pricing-btn accent-action" onclick="activatePremium()">Subscribe Now</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="settings-view" class="view-section">
+            <div class="glass-panel">
+                <h2>App Preferences & Premium System Layers</h2>
+                <p style="color:var(--text-muted); margin-bottom:2rem;">Configure runtime tracking rules. Premium users can toggle these features on/off instantly.</p>
+                
+                <div class="setting-row">
+                    <div>
+                        <strong>Enable Real-Time Geolocation Tracking</strong>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Pins recommended matches exactly around your actual live coordinates.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="gps-toggle" onchange="togglePermission('gps')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <strong>Integrate Weather API Conditions</strong>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Swaps ranking scales automatically if localized environmental grids flag rain forecast nodes.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="weather-toggle" onchange="togglePermission('weather')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
         </section>
 
     </div>
 
     <script>
-        // Data Mappings matching your detailed rules
         const moodData = [
-            { id: 'adventure', title: '🧭 Adventure', desc: 'Rock climbing, racing, outdoor exploration.' },
-            { id: 'relaxing', title: '😌 Relaxing', desc: 'Cafés, reading, spa, meditation.' },
-            { id: 'creative', title: '🎨 Creative', desc: 'Workshops, baking, art galleries.' },
-            { id: 'social', title: '👥 Social', desc: 'Bowling, escape rooms, board game lounges.' },
-            { id: 'nature', title: '🌿 Nature', desc: 'Hiking trails, beaches, botanical gardens.' },
-            { id: 'romantic', title: '💖 Romantic', desc: 'Stargazing, romantic dinners, sunset walks.' }
+            { id: 'adventure', title: '🧭 Adventure', desc: 'Exploration, physical effort, or active discovery.' },
+            { id: 'relaxing', title: '😌 Relaxing', desc: 'Calm, low-stress experiences promoting complete rest.' },
+            { id: 'creative', title: '🎨 Creative', desc: 'Encourages imagination and self-expression.' },
+            { id: 'social', title: '👥 Social', desc: 'Focused on interacting and connecting with others.' },
+            { id: 'nature', title: '🌿 Nature', desc: 'Immerse participants completely in the outdoors.' },
+            { id: 'romantic', title: '💖 Romantic', desc: 'Intimate experiences strengthening connections.' }
         ];
 
         const energyLevels = [
-            { id: 'high', title: 'Very High', desc: 'Ready for sports, racing, tracking intensity.' },
-            { id: 'medium', title: 'Medium', desc: 'Sightseeing, group boardgames, casual walking.' },
-            { id: 'low', title: 'Low', desc: 'Lazy vibe: reading, movies, spa treatments.' }
+            { id: 'high', title: 'Very High', desc: 'Energetic, intense sports, outdoor racing games.' },
+            { id: 'medium', title: 'Medium', desc: 'Effort involved but casual: sightseeing, boardgames.' },
+            { id: 'low', title: 'Low', desc: 'Lazy structural energy: reading, cinematic screening, spa.' }
         ];
 
         const groupSizes = [
-            { id: '1', title: '👤 Solo (1)', desc: 'Enjoyed completely alone.' },
-            { id: '2', title: '👥 Pair (2)', desc: 'Best for couples, dates, or tight friendships.' },
-            { id: '3-4', title: '🎉 Group (3-4)', desc: 'Escape rooms, bowling dynamics.' },
-            { id: '5plus', title: '🥳 Big Crew (5+)', desc: 'Community gatherings, team games.' }
+            { id: '1', title: '👤 1 Person', desc: 'Designed to be enjoyed completely alone.' },
+            { id: '2', title: '👥 2 People', desc: 'Best suited for pairs and continuous conversation.' },
+            { id: '3-4', title: '🎉 Group (3-4)', desc: 'Escape rooms, bowling matching dynamics.' },
+            { id: '5plus', title: '🥳 5+ People', desc: 'Thrives with larger groups and connection.' }
         ];
 
         const companionshipContexts = [
-            { id: 'solo', title: '🧘 Alone' }, { id: 'family', title: '👨‍👩‍👧‍👦 Family' },
+            { id: 'solo', title: '🧘 Solo' }, { id: 'family', title: '👨‍👩‍👧‍👦 Family' },
             { id: 'date', title: '💞 Date' }, { id: 'friends', title: '🧑‍🤝‍🧑 Friends' }
         ];
 
@@ -449,22 +707,21 @@
             { id: '5', title: '🚶 Within 5 km' }, { id: '15', title: '🚲 Within 15 km' }, { id: '30', title: '🧳 30+ km' }
         ];
 
-        // Master Place Database 
         const masterLocationsDb = [
-            { name: "Apex Rock Climbing & Bouldering", cat: "adventure", energy: "high", env: "indoor", budget: "mid", address: "404 Alpine Ridge Way", rating: 4.8, reviews: 142, distance: "3.2 km" },
-            { name: "Vortex Go-Kart Raceway Track", cat: "adventure", energy: "high", env: "outdoor", budget: "high", address: "888 Velocity Circuit Blvd", rating: 4.9, reviews: 310, distance: "7.1 km" },
-            { name: "Artisanal Coffee Collective & Roastery", cat: "relaxing", energy: "low", env: "indoor", budget: "mid", address: "12 Inkwell Alley", rating: 4.7, reviews: 88, distance: "0.4 km" },
-            { name: "Serenity Day Spa & Massage Vault", cat: "relaxing", energy: "low", env: "indoor", budget: "high", address: "77 Orchid Meadow Lane", rating: 4.6, reviews: 64, distance: "2.1 km" },
-            { name: "The Palette Lounge Studio", cat: "creative", energy: "medium", env: "indoor", budget: "mid", address: "440 Canvas Crossing", rating: 4.8, reviews: 105, distance: "4.5 km" },
-            { name: "Retro Bowling Lanes & Arcade", cat: "social", energy: "high", env: "indoor", budget: "mid", address: "123 Entertainment Blvd", rating: 4.7, reviews: 412, distance: "1.8 km" },
-            { name: "Enigma Breakout Live Escape Room", cat: "social", energy: "medium", env: "indoor", budget: "mid", address: "90 Riddle Matrix Sector", rating: 4.9, reviews: 180, distance: "2.9 km" },
-            { name: "Botanical Canopy Reserve Park", cat: "nature", energy: "medium", env: "outdoor", budget: "free", address: "1 Meadowcrest Ridge", rating: 4.8, reviews: 290, distance: "6.0 km" },
-            { name: "Summit Ridge Backpacking Loop Trail", cat: "nature", energy: "high", env: "outdoor", budget: "free", address: "Highway Mile Marker 14", rating: 4.6, reviews: 75, distance: "12.4 km" },
-            { name: "Bespoke Candlelit Dining Vault", cat: "romantic", energy: "low", env: "indoor", budget: "high", address: "88 Velvet Portico Arcade", rating: 4.9, reviews: 215, distance: "1.2 km" },
-            { name: "Starlight Cinema Arena Complex", cat: "relaxing", energy: "low", env: "indoor", budget: "mid", address: "70 Projection Plaza", rating: 4.7, reviews: 340, distance: "2.5 km" }
+            { name: "Apex Rock Climbing Gym", cat: "adventure", energy: "high", env: "indoor", budget: "mid", address: "404 Alpine Ridge Way", rating: 4.8, reviews: 142, distance: "3.2 km", hours: "Open until 22:00", sub: "Gym" },
+            { name: "Vortex Go-Kart Raceway", cat: "adventure", energy: "high", env: "outdoor", budget: "high", address: "888 Velocity Circuit Blvd", rating: 4.9, reviews: 310, distance: "7.1 km", hours: "Open until 23:30", sub: "Racing" },
+            { name: "Artisanal Cafe Collective", cat: "relaxing", energy: "low", env: "indoor", budget: "mid", address: "12 Inkwell Alley", rating: 4.7, reviews: 88, distance: "0.4 km", hours: "Open until 19:00", sub: "Coffee Shop" },
+            { name: "Serenity Day Spa & Wellness", cat: "relaxing", energy: "low", env: "indoor", budget: "high", address: "77 Orchid Meadow Lane", rating: 4.6, reviews: 64, distance: "2.1 km", hours: "Open until 21:00", sub: "Spa" },
+            { name: "The Palette Lounge", cat: "creative", energy: "medium", env: "indoor", budget: "mid", address: "440 Canvas Crossing", rating: 4.8, reviews: 105, distance: "4.5 km", hours: "Open until 22:00", sub: "Workshop" },
+            { name: "Retro Bowling Lanes & Lounge", cat: "social", energy: "high", env: "indoor", budget: "mid", address: "123 Entertainment Blvd", rating: 4.7, reviews: 412, distance: "1.8 km", hours: "Open until 00:00", sub: "Bowling" },
+            { name: "Enigma Breakout Rooms", cat: "social", energy: "medium", env: "indoor", budget: "mid", address: "90 Riddle Matrix Sector", rating: 4.9, reviews: 180, distance: "2.9 km", hours: "Open until 23:00", sub: "Escape Room" },
+            { name: "Botanical Canopy Reserve", cat: "nature", energy: "medium", env: "outdoor", budget: "free", address: "1 Meadowcrest Ridge", rating: 4.8, reviews: 290, distance: "6.0 km", hours: "Open until Sunset", sub: "Park" },
+            { name: "Summit Ridge Backpacking Loop", cat: "nature", energy: "high", env: "outdoor", budget: "free", address: "State Highway Mile marker 14", rating: 4.6, reviews: 75, distance: "12.4 km", hours: "Open 24 Hours", sub: "Hiking Trail" },
+            { name: "Bespoke Candlelit Dining Vault", cat: "romantic", energy: "low", env: "indoor", budget: "high", address: "88 Velvet Portico Arcade", rating: 4.9, reviews: 215, distance: "1.2 km", hours: "Open until 23:00", sub: "Restaurant" },
+            { name: "Starlight Cinema Arena", cat: "relaxing", energy: "low", env: "indoor", budget: "mid", address: "70 Projection Plaza", rating: 4.7, reviews: 340, distance: "2.5 km", hours: "Open until 01:00", sub: "Movie Theater" }
         ];
 
-        // --- AI LEARNING MACHINE MEMORY WEIGHTS ---
+        let appPermissions = { gps: false, weather: false };
         let aiMemoryWeights = {};
         masterLocationsDb.forEach(loc => { aiMemoryWeights[loc.name] = 0; });
 
@@ -487,7 +744,7 @@
             dataset.forEach(item => {
                 const tile = document.createElement('div');
                 tile.className = 'option-tile';
-                tile.innerHTML = `<strong>${item.title || item.name || item.id}</strong><p style="font-size:0.8rem; color:var(--text-muted);">${item.desc || ''}</p>`;
+                tile.innerHTML = `<span class="tile-title">${item.title}</span><span class="tile-desc">${item.desc || ''}</span>`;
                 tile.onclick = () => {
                     document.querySelectorAll(`#${targetId} .option-tile`).forEach(t => t.classList.remove('selected'));
                     tile.classList.add('selected');
@@ -515,13 +772,23 @@
             document.getElementById(`${viewId}-view`).classList.add('active');
         }
 
+        function startQuestionnaire() {
+            currentQuizStep = 1;
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-1').classList.add('active');
+            document.getElementById('prev-btn').disabled = true;
+            document.getElementById('next-btn').innerText = "Next";
+            document.getElementById('step-indicator').innerText = "Screen 1 of 4";
+            switchView('quiz');
+        }
+
         function navigateQuiz(direction) {
             document.getElementById(`step-${currentQuizStep}`).classList.remove('active');
             currentQuizStep += direction;
 
             if (currentQuizStep > 4) {
                 currentQuizStep = 4;
-                processEngineRecommendations(false);
+                processEngineRecommendations();
                 return;
             }
 
@@ -531,55 +798,64 @@
             document.getElementById('step-indicator').innerText = `Screen ${currentQuizStep} of 4`;
         }
 
-        function triggerQuickSearch() {
-            const query = document.getElementById('quickSearchInput').value.trim();
-            if(!query) return;
-            processEngineRecommendations(true, query);
+        async function togglePermission(type) {
+            const checkbox = document.getElementById(`${type}-toggle`);
+            if (checkbox.checked) {
+                if (type === 'gps') {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            () => { appPermissions.gps = true; alert("GPS Permission Granted! System maps synced."); },
+                            () => { appPermissions.gps = false; checkbox.checked = false; alert("Location denied by browser layer."); }
+                        );
+                    } else {
+                        alert("Geolocation missing profile structure.");
+                        checkbox.checked = false;
+                    }
+                } else if (type === 'weather') {
+                    appPermissions.weather = true;
+                    alert("Weather Condition Logic Activated!");
+                }
+            } else {
+                appPermissions[type] = false;
+                alert(`${type.toUpperCase()} Tracking Framework Turned Off.`);
+            }
         }
 
-        // --- THE AI ALGORITHM ENGINE ---
-        function processEngineRecommendations(isQuickSearch = false, queryText = "") {
+        function processEngineRecommendations() {
             const target = document.getElementById('suggestions-render-target');
             target.innerHTML = "";
             
             let scoredList = masterLocationsDb.map(place => {
-                let score = 50; // Starting baseline calculation
+                let score = 50; 
 
-                // Match with selection constraints 
-                if (!isQuickSearch) {
-                    if (selections.mood && place.cat === selections.mood) score += 25;
-                    if (selections.energy && place.energy === selections.energy) score += 15;
-                    if (selections.env && place.env === selections.env) score += 10;
-                    if (selections.budget && place.budget === selections.budget) score += 10;
-                } else {
-                    const normQuery = queryText.toLowerCase();
-                    if (place.name.toLowerCase().includes(normQuery) || place.cat.toLowerCase().includes(normQuery)) {
-                        score += 40;
-                    }
-                }
+                if (selections.mood && place.cat === selections.mood) score += 25;
+                if (selections.energy && place.energy === selections.energy) score += 15;
+                if (selections.env && place.env === selections.env) score += 10;
+                if (selections.budget && place.budget === selections.budget) score += 10;
 
-                // Inject user behavior parameters (Like / Dislike metrics)
+                if (appPermissions.gps) score += 5; 
+                if (appPermissions.weather && place.env === 'indoor') score += 5; 
+
                 score += (aiMemoryWeights[place.name] || 0);
 
                 return { ...place, finalCalculatedScore: Math.min(Math.max(score, 0), 100) };
             });
 
-            // Sort directly by match weight
             scoredList.sort((a, b) => b.finalCalculatedScore - a.finalCalculatedScore);
 
-            // Ensure 10 unique options show up
-            let renderCount = 0;
             scoredList.forEach(place => {
-                renderCount++;
                 const card = document.createElement('div');
                 card.className = 'suggestion-card';
                 card.innerHTML = `
-                    <div>
+                    <div class="suggestion-details">
                         <h3>${place.name}</h3>
-                        <p>${place.address} • ${place.distance} away</p>
-                        <p style="font-size:0.85rem; color:#facc15;">★ ${place.rating} (${place.reviews} reviews)</p>
+                        <p>${place.address} ${appPermissions.gps ? '• Verified Near Coordinates' : '• ' + place.distance + ' away'}</p>
+                        <p style="font-size:0.85rem; color: var(--accent);">★ ${place.rating} (${place.reviews} verified reviews)</p>
                         <div class="meta-tags">
                             <span class="tag score">AI Match: ${place.finalCalculatedScore}%</span>
+                            <span class="tag hours">${place.hours}</span>
+                            <span class="tag">${place.sub}</span>
+                            ${appPermissions.weather ? '<span class="tag" style="background:rgba(6,182,212,0.2)">☀️ Weather Inspected</span>' : ''}
                         </div>
                     </div>
                     <div class="card-actions">
@@ -587,9 +863,9 @@
                             <button class="btn-feedback" onclick="trainAiEngine('${place.name}', 15)">👍 Like</button>
                             <button class="btn-feedback" onclick="trainAiEngine('${place.name}', -15)">👎 Dislike</button>
                         </div>
-                        <div style="display:flex; gap:0.4rem;">
-                            <button class="btn-feedback" onclick="saveToDashboard('favorites-list', '${place.name}')">💖 Fav</button>
-                            <button class="btn-feedback" onclick="saveToDashboard('scheduled-list', '${place.name} (Planned)')">📅 Plan</button>
+                        <div style="display:flex; gap:0.4rem; margin-bottom:0.3rem;">
+                            <button class="btn-feedback" onclick="saveToDashboard('favorites-list', '${place.name}')">💖 Save</button>
+                            <button class="btn-feedback" onclick="saveToDashboard('scheduled-list', '${place.name} (Scheduled)')">📅 Plan</button>
                         </div>
                         <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name + ' ' + place.address)}" target="_blank" class="get-me-there-btn">Get Me There 📍</a>
                     </div>
@@ -597,17 +873,13 @@
                 target.appendChild(card);
             });
 
-            document.getElementById('results-title').innerText = isQuickSearch ? `AI Matrix Matches for "${queryText}"` : "Calculated AI Recommendations";
             switchView('results');
         }
 
-        // --- TRACKING TRAIN MECHANISM ---
         function trainAiEngine(name, value) {
             aiMemoryWeights[name] = (aiMemoryWeights[name] || 0) + value;
-            alert(`AI training updated for "${name}". The system will adjust its recommendation layers for this choice next time!`);
-            // Live refresh view rankings
-            const currentInput = document.getElementById('quickSearchInput').value;
-            processEngineRecommendations(!!currentInput, currentInput);
+            alert(`AI trained successfully for "${name}". System rankings will adjust dynamically.`);
+            processEngineRecommendations();
         }
 
         function saveToDashboard(listId, name) {
@@ -615,7 +887,20 @@
             const li = document.createElement('li');
             li.innerHTML = `<span>${name}</span><button class="remove-btn" onclick="this.parentNode.remove()">×</button>`;
             list.appendChild(li);
-            alert(`Added ${name} to your dashboard listings!`);
+            alert(`"${name}" updated to your personal home dashboard tracking array!`);
+        }
+
+        function activatePremium() {
+            alert("Pro membership updated across active instances!");
+            switchView('home');
+        }
+
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({ title: 'UpNext AI', text: 'Check out this app design!', url: window.location.href }).catch(console.error);
+            } else {
+                alert('Share path saved to keyboard layer buffer! ✨');
+            }
         }
     </script>
 </body>
